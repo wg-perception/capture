@@ -3,7 +3,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 ectomodule(capture
   module.cpp
   DeltaRT.cpp
-  RescaleRegisteredDepth.cpp
   )
 
 link_ecto(capture
