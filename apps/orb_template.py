@@ -6,7 +6,7 @@ from ecto_opencv.features2d import ORB, DrawKeypoints, Matcher, MatchRefinement,
 
 from ecto_opencv.imgproc import cvtColor, Conversion
 from ecto_opencv.calib import LatchMat, Select3d, Select3dRegion, PlaneFitter, PoseDrawer, DepthValidDraw
-from object_recognition.common.io.source import Source, SourceTypes
+from image_pipeline.io.source import create_source
 import argparse
 from ecto.opts import scheduler_options, run_plasm
 import ecto_ros
@@ -16,12 +16,12 @@ from capture.orb_capture import *
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Computes the ORB feature and descriptor template that may be used as a fiducial marker.')
-    parser.add_argument('-o,--output', dest='output', type=str, help='The output directory for this template. Default: %(default)s', default='./')
+    parser.add_argument('-o,--output', dest='output', type=str,
+                        help='The output directory for this template. Default: %(default)s', default='./')
     parser.add_argument('-n_features', dest='n_features', type=int,
                         help='The number of features to detect for the template.,%(default)d',
                         default=5000)    
     scheduler_options(parser.add_argument_group('Scheduler'))
-    Source.add_arguments(parser.add_argument_group('Source'))
     options = parser.parse_args()
     if not os.path.exists(options.output):
         os.makedirs(options.output)
@@ -32,7 +32,7 @@ options = parse_args()
 plasm = ecto.Plasm()
 
 #setup the input source, grayscale conversion
-source = Source.parse_arguments(options)
+source = create_source('image_pipeline','OpenNISource')
 rgb2gray = cvtColor (flag=Conversion.RGB2GRAY)
 
 plasm.connect(source['image'] >> rgb2gray ['image'])
@@ -93,6 +93,6 @@ for y, x in (
 plasm.connect(orb_display['save'] >> image_writer['__test__'],
               source['image'] >> image_writer['image']
               )
-if 'ros' in options.type:
-  ecto_ros.init(sys.argv, 'orb_template')
+#if 'ros' in options.type:
+#  ecto_ros.init(sys.argv, 'orb_template')
 run_plasm(options, plasm, locals=vars())
