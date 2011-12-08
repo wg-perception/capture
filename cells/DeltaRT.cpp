@@ -70,6 +70,10 @@ namespace object_recognition
             std::cout << "Satisfied, total observations: " << *n_desired_ << std::endl;
             return ecto::QUIT;
           }
+          else
+          {
+            std::cout << "Novel view, total:" << observations_.size() << std::endl;
+          }
         }
         return ecto::OK;
       }

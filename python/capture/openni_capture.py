@@ -4,11 +4,12 @@ import time
 import ecto
 from ecto_opencv import highgui, calib, imgproc
 import ecto_ros, ecto_sensor_msgs, ecto_geometry_msgs
-from ecto_object_recognition import capture
+from ecto_ros import Cv2CameraInfo
 from fiducial_pose_est import OpposingDotPoseEstimator
-from object_recognition.common.io.source import Source, SourceTypes
-from .arbotix import *
 from .orb_capture import OrbPoseEstimator
+from image_pipeline.io.source import create_source
+from image_pipeline import CameraModelToCv
+import capture
 
 ImageSub = ecto_sensor_msgs.Subscriber_Image
 CameraInfoSub = ecto_sensor_msgs.Subscriber_CameraInfo
@@ -16,28 +17,6 @@ ImageBagger = ecto_sensor_msgs.Bagger_Image
 CameraInfoBagger = ecto_sensor_msgs.Bagger_CameraInfo
 PoseBagger = ecto_geometry_msgs.Bagger_PoseStamped
 
-def find_diff(prev, current):
-  max_val = 0xFFFF #16bit max_val
-  min_val = 0x0
-  if current - prev >= 0:
-    return current - prev
-  else:
-    return (max_val - prev) + current
-
-def rotate(a, MY_SERVO, degrees, speed):
-  a.enableWheelMode(MY_SERVO)
-  prev = pos = a.getPosition(MY_SERVO)
-  ticks_per_degree = 15.170
-  total_ticks = ticks_per_degree * degrees
-  # set speed for rotation in joint mode
-  a.setSpeed(MY_SERVO, speed)    # half speed, values between 0 and 1023
-  diff = 0
-  while diff < total_ticks:
-      pos = a.getPosition(MY_SERVO)
-      diff = find_diff(prev, pos)
-      time.sleep(0.001)
-  a.setSpeed(MY_SERVO, 0)
-  time.sleep(0.025)
 
 class TurnTable(ecto.Cell):
     '''Uses the arbotix library to talk to servoes.'''
@@ -108,8 +87,7 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
 
     graph = []
 
-    source = Source.create_source(source_type=SourceTypes.ros_kinect)
-
+    source = create_source('image_pipeline', 'OpenNISource')
 
     poser = OpposingDotPoseEstimator(rows=5, cols=3,
                                      pattern_type=calib.ASYMMETRIC_CIRCLES_GRID,
@@ -123,9 +101,7 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
     delta_pose = ecto.If('delta R|T', cell=capture.DeltaRT(angle_thresh=angle_thresh,
                                                           n_desired=n_desired))
 
-    display = ecto.If('Pose Display', cell=highgui.imshow(name='Poses'))
-    display.inputs.__test__ = True
-
+    display = highgui.imshow(name='Poses')
     poseMsg = RT2PoseStamped(frame_id='/camera_rgb_optical_frame')
 
     graph += [source['image'] >> rgb2gray[:],
@@ -139,7 +115,14 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
 
     masker = segmentation_cell
     maskMsg = Mat2Image(frame_id='/camera_rgb_optical_frame')
-
+    rgbMsg = Mat2Image(frame_id='/camera_rgb_optical_frame', swap_rgb=True)
+    depthMsg = Mat2Image(frame_id='/camera_rgb_optical_frame')
+    
+    
+    graph += [
+              source['depth'] >> depthMsg[:],
+              source['image'] >> rgbMsg[:],
+              ]
     graph += [
               source['depth'] >> masker['depth'],
               source['K'] >> masker['K'],
@@ -148,12 +131,15 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
               ]
 #    graph += [source['depth'] >> highgui.imshow(name='depth')['image']
 #              ]
-
+    camera2cv = CameraModelToCv()
+    cameraMsg = Cv2CameraInfo(frame_id='/camera_rgb_optical_frame')
+    graph += [source['camera'] >> camera2cv['camera'],
+              camera2cv['K', 'D', 'image_size'] >> cameraMsg['K', 'D', 'image_size']
+              ]
     #display the mask
     mask_and = imgproc.BitwiseAnd()
     mask2rgb = imgproc.cvtColor('mask -> rgb', flag=imgproc.Conversion.GRAY2RGB)
-    mask_display = ecto.If(cell=highgui.imshow(name='mask'))
-    mask_display.inputs.__test__ = True
+    mask_display = highgui.imshow(name='mask')
     graph += [
               masker['mask'] >> mask2rgb['image'],
               mask2rgb['image'] >> mask_and['a'],
@@ -161,7 +147,6 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
               mask_and[:] >> mask_display['image'],
             ]
     if not preview:
-        display.inputs.__test__ = True
         baggers = dict(image=ImageBagger(topic_name='/camera/rgb/image_color'),
                    depth=ImageBagger(topic_name='/camera/depth/image'),
                    mask=ImageBagger(topic_name='/camera/mask'),
@@ -173,10 +158,10 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
                             cell=ecto_ros.BagWriter(baggers=baggers, bag=bag_name)
                             )
 
-        bag_keys = ('image', 'depth', 'image_ci', 'depth_ci')
-        source_keys = ('image_message', 'depth_message', 'image_info_message', 'depth_info_message')
-
-        graph += [source[source_keys] >> bagwriter[bag_keys],
+        graph += [
+                  rgbMsg[:] >> bagwriter['image'],
+                  depthMsg[:] >> bagwriter['depth'],
+                  cameraMsg[:] >> (bagwriter['image_ci'], bagwriter['depth_ci']),
                   poseMsg['pose'] >> bagwriter['pose'],
                   maskMsg[:] >> bagwriter['mask'],
                   ]
@@ -192,7 +177,7 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
         else:
             delta_pose.inputs.__test__ = True
 
-        graph += [novel >> (bagwriter['__test__'], display['__test__'], mask_display['__test__'])]
+        graph += [novel >> (bagwriter['__test__'])]
 
     plasm = ecto.Plasm()
     plasm.connect(graph)

@@ -55,9 +55,9 @@ object sparsely, depending on the angle_thresh setting.'''),
 
 if "__main__" == __name__:
     argv = sys.argv[:]
-    ecto_ros.strip_ros_args(sys.argv)
+    #ecto_ros.strip_ros_args(sys.argv)
     options = parse_args()
-    ecto_ros.init(argv, "object_capture", False)
+    #ecto_ros.init(argv, "object_capture", False)
     segmentation = options.segmentation_factory(options)
     plasm = None
     (plasm, segmentation) = openni_capture.create_capture_plasm(bag_name=options.bag,

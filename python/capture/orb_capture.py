@@ -1,10 +1,11 @@
 import ecto
 from ecto_opencv.highgui import VideoCapture, imshow, FPSDrawer, MatPrinter, MatReader, imread
-from ecto_opencv.features2d import FAST, ORB, Matcher, \
+from ecto_opencv.features2d import FASTFeature, ORB, Matcher, \
     MatchRefinementHSvd, DrawMatches, KeypointsToMat
 from ecto_opencv.calib import Select3d, Select3dRegion, PlaneFitter, PoseDrawer, DepthValidDraw, TransformCompose
 from ecto_object_recognition.tod_detection import LSHMatcher
 
+FAST = FASTFeature
 class FeatureFinder(ecto.BlackBox):
     orb = ORB
     fast = FAST

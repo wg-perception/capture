@@ -7,8 +7,8 @@ from ecto_opencv.highgui import VideoCapture, imshow, FPSDrawer, MatPrinter, Mat
 from ecto_opencv.features2d import ORB, DrawKeypoints, Matcher, MatchRefinement, MatchRefinementHSvd, MatchRefinement3d, MatchRefinementPnP, DrawMatches
 from ecto_opencv.imgproc import cvtColor, Conversion
 from ecto_opencv.calib import LatchMat, Select3d, Select3dRegion, PlaneFitter, PoseDrawer, DepthValidDraw, TransformCompose
-from ecto_object_recognition.tod_detection import LSHMatcher
 from ecto.opts import scheduler_options, run_plasm, cell_options
+from image_pipeline.io.source import create_source
 
 
 from object_recognition.common.io.source import Source, SourceTypes
@@ -21,8 +21,6 @@ if __name__ == '__main__':
         parser = argparse.ArgumentParser(description='Estimate the pose of an ORB template.')
 
         scheduler_options(parser.add_argument_group('Scheduler'))
-        Source.add_arguments(parser.add_argument_group('Source'))
-
         factory = cell_options(parser, OrbPoseEstimator, 'track')
         options = parser.parse_args()
         options.orb_factory = factory
@@ -32,7 +30,7 @@ if __name__ == '__main__':
     plasm = ecto.Plasm()
 
     #setup the input source, grayscale conversion
-    source = Source.parse_arguments(options)
+    source = create_source('image_pipeline','OpenNISource')
     rgb2gray = cvtColor('Grayscale', flag=Conversion.RGB2GRAY)
     plasm.connect(source['image'] >> rgb2gray ['image'])
 
@@ -52,7 +50,7 @@ if __name__ == '__main__':
     display = imshow('orb display', name='Pose')
     plasm.connect(pose_est['debug_image'] >> display['image'],
                   )
-    if 'ros' in options.type:
-      ecto_ros.init(sys.argv, 'orb_track')
+#    if 'ros' in options.type:
+#      ecto_ros.init(sys.argv, 'orb_track')
 
     run_plasm(options, plasm, locals=vars())
