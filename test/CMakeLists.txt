@@ -17,3 +17,14 @@ target_link_libraries(capture-test
   )
 
 add_test(capture-test ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/capture-test)
+
+#testing macros
+macro(pytest pyfile)
+  string(REPLACE ";" " " args "${ARGN}")
+  add_test(object_recognition_${pyfile}
+    ${CMAKE_CURRENT_SOURCE_DIR}/run_test.sh ${CMAKE_BINARY_DIR}/python_path.sh ${CMAKE_CURRENT_SOURCE_DIR}/${pyf$
+    )
+endmacro()
+
+pytest(test_capture_help)
+
