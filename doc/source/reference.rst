@@ -1,4 +1,4 @@
 capture cells
 ==============
 
-.. ectomodule:: object_recognition.capture
+.. ectomodule:: capture
