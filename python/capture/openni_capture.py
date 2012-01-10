@@ -87,7 +87,8 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
 
     graph = []
 
-    source = create_source('image_pipeline', 'OpenNISource')
+    from ecto_openni import SXGA_RES, FPS_15
+    source = create_source('image_pipeline','OpenNISource',image_mode=SXGA_RES,image_fps=FPS_15)
 
     poser = OpposingDotPoseEstimator(rows=5, cols=3,
                                      pattern_type=calib.ASYMMETRIC_CIRCLES_GRID,

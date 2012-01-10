@@ -30,7 +30,8 @@ if __name__ == '__main__':
     plasm = ecto.Plasm()
 
     #setup the input source, grayscale conversion
-    source = create_source('image_pipeline','OpenNISource')
+    from ecto_openni import SXGA_RES, FPS_15
+    source = create_source('image_pipeline','OpenNISource',image_mode=SXGA_RES,image_fps=FPS_15)
     rgb2gray = cvtColor('Grayscale', flag=Conversion.RGB2GRAY)
     plasm.connect(source['image'] >> rgb2gray ['image'])
 
