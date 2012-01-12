@@ -3,7 +3,7 @@ from ecto_opencv.highgui import VideoCapture, imshow, FPSDrawer, MatPrinter, Mat
 from ecto_opencv.features2d import FASTFeature, ORB, Matcher, \
     MatchRefinementHSvd, DrawMatches, KeypointsToMat
 from ecto_opencv.calib import Select3d, Select3dRegion, PlaneFitter, PoseDrawer, DepthValidDraw, TransformCompose
-from ecto_object_recognition.tod_detection import LSHMatcher
+from ecto_opencv.features2d import LSHMatcher
 
 FAST = FASTFeature
 class FeatureFinder(ecto.BlackBox):
