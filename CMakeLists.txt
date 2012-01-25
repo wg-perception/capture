@@ -48,3 +48,9 @@ add_subdirectory(doc)
 #  add_subdirectory(test)
 #endif()
 
+install(DIRECTORY apps/
+        DESTINATION bin
+        USE_SOURCE_PERMISSIONS
+        PATTERN "*.bag" EXCLUDE
+        PATTERN "*.pyc" EXCLUDE
+        )
