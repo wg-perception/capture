@@ -26,5 +26,8 @@ macro(pytest pyfile)
     )
 endmacro()
 
-pytest(test_capture_help)
+object_recognition_help_test(${CMAKE_CURRENT_SOURCE_DIR}/../apps/capture)
+object_recognition_help_test(${CMAKE_CURRENT_SOURCE_DIR}/../apps/orb_template.py)
+object_recognition_help_test(${CMAKE_CURRENT_SOURCE_DIR}/../apps/orb_track.py)
+
 
