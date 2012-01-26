@@ -68,8 +68,9 @@ Before you start capturing data, please start up the ROS OpenNI driver::
 
    % roslaunch openni_camera openni_node.launch
 
-It may be preferable to use the SXGA (roughly 1 megapixel) mode of your openni device if possible.
+It may be preferable to use the SXGA (roughly 1 megapixel) mode of your openni device if possible.::
 
+   % rosrun dynamic_reconfigure dynparam set /openni_node1 image_mode 1
 
 
 capture
