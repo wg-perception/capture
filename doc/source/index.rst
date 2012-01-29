@@ -14,6 +14,29 @@ Object capture tools.
   reference.rst
   
 
+3d Camera
+---------
+
+.. toggle1:: click here for ROS instructions
+
+    Start your 3d sensor (Kinect, ASUS ...)
+
+.. toggle2:: click here for non-ROS instructions
+
+    The ROS drivers for openni are used to capture a view sparse bag of data.
+    Please make sure you are on ``electric`` or the drivers.
+
+    See http://www.ros.org/wiki/electric/Installation/Ubuntu and http://ros.org/wiki/openni
+    for detailed instructions.
+
+    Before you start capturing data, please start up the ROS OpenNI driver::
+
+       % roslaunch openni_camera openni_node.launch
+
+    It may be preferable to use the SXGA (roughly 1 megapixel) mode of your openni device if possible.::
+
+       % rosrun dynamic_reconfigure dynparam set /openni_node1 image_mode 1
+
 setup
 -----
 Capture is view based, and requires a fiducial that is rigidly attached to
@@ -53,25 +76,18 @@ ORB Template
    be used as if it were a fiducial, giving a pose and segmentation prior.
 
 If you are not inclined to print something out, you may use any highly textured planar surface.
-This involves capturinga  a connonical view of said surface, and then it may be used to establish an
+This involves capturing a connonical view of said surface, and then it may be used to establish an
 object coordinate system, and perform segmentation.
 
-ROS OpenNI Startup
-^^^^^^^^^^^^^^^^^^
-The ROS drivers for openni are used to capture a view sparse bag of data.
-Please make sure you are on ``electric`` or the drivers.
+First capture an ORB template of your capture workspace. It should be take from an planar frontal view, and the center
+of the image should be filled by the plane. Press 's' to save an image. The result will be placed in the directory
+given, e.g. my_textured_plane. Press 'q' to quit the template capture program.::
 
-See http://www.ros.org/wiki/electric/Installation/Ubuntu and http://ros.org/wiki/openni
-for detailed instructions.
+   % rosrun object_recognition_core orb_template.py -o my_textured_plane
 
-Before you start capturing data, please start up the ROS OpenNI driver::
+Try out tracking to see if you got a good template. Press 'q' to quit.::
 
-   % roslaunch openni_camera openni_node.launch
-
-It may be preferable to use the SXGA (roughly 1 megapixel) mode of your openni device if possible.::
-
-   % rosrun dynamic_reconfigure dynparam set /openni_node1 image_mode 1
-
+   % rosrun object_recognition_core orb_track.py --track_directory my_textured_plane
 
 capture
 -------
@@ -90,13 +106,93 @@ This will result in a ROS bag of data that has the following topics::
                 /camera/rgb/camera_info     72 msgs    : sensor_msgs/CameraInfo   
                 /camera/rgb/image_color     72 msgs    : sensor_msgs/Image
 
-Platform specific instructions
-------------------------------
 
-.. toggle2:: click here for ROS instructions
+To use ``capture`` you should place your object in the center of the fiducial board, and keep it in the same location
+for the entirety of the capture session. Slowly turn the fiducial board, and the program should capture views that are
+evenly distributed in a view pose sphere.
 
-    .. include::  capture_standalone.rst
+Run the capture program in preview mode and make sure the mask and pose are being picked up.
 
-.. toggle1:: click here for non-ROS instructions
+.. toggle1:: click here for ROS instructions
 
-    .. include::  capture_ros.rst
+    ::
+
+       % apps/capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag --preview
+
+.. toggle2:: click here for non-ROS instructions
+
+    ::
+
+       % rosrun object_recognition_core capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag --preview
+
+You should see an popup image similar to the following:
+
+.. figure:: capture.gif
+
+   A sample sequence of view captured using an opposing dot pattern fudicial marker.
+
+When satisified by the preview mode, run it for real.  The following will capture a bag of 60 views
+where each view is normally distributed on the view sphere. The mask and pose displays should only refresh
+when a novel view is captured.  The program will finish when 35 (-n) views are captured.
+Press 'q' to quit early.
+
+.. toggle1:: click here for ROS instructions
+
+    ::
+
+       % apps/capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag
+
+.. toggle2:: click here for non-ROS instructions
+
+    ::
+
+       % rosrun object_recognition_core capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag
+
+Remember to query the program for help if you are lost:
+
+.. program-output:: apps/capture --help
+   :in_srcdir:
+   :until: Scheduler Options:
+
+multiple capture sessions
++++++++++++++++++++++++++
+If you decided to take multiple bags of an object, from different view points,
+please concatenate the bags before upload. However, if you moved the object on the board, then you should consider
+these bags as seperate "sessions" of the same object.
+
+There is a convenience script for this called ``concat.py``
+
+.. .. program-output:: apps/bagscripts/concat.py --help
+..   :in_srcdir:
+
+upload
+------
+Once you have captured a bag of views, you will want to upload the bag to the database.  This upload will contain all
+of the views in the bag, plus some meta information about the object. It assumed that each bag has one object,
+and this object has a consistent coordinate frame throughout the bag.
+
+use
++++
+A typical command line session will look like::
+
+   % apps/upload -a 'Ethan Rublee' -e 'erublee@willowgarage.com' -i silk_highres.bag -n 'silk' -d 'A carton of Silk brand soy milk.' --commit milk, soy, kitchen, tod
+   Uploaded session with id: 4ad9f2d3db57bbd414e5e987773490a0
+
+If you leave off the ``--commit`` the script will run without actually committing anything to
+the database.
+
+Now that the bag is uploaded, into the database, you can see it in the db by browsing to:
+
+* http://localhost:5984/_utils/database.html?object_recognition/_design/objects/_view/by_object_name
+
+command line interface
+++++++++++++++++++++++
+.. .. program-output:: apps/upload --help
+   :in_srcdir:
+   :until: Scheduler Options:
+
+Willow users
+++++++++++++
+Some pre-acquired bags exist internally for now, just rsync them::
+
+   % rsync -vPa /wg/wgss0_shelf1/object_recognition_capture ./
