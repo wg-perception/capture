@@ -27,7 +27,6 @@ find_package(OpenCV REQUIRED)
 find_package(ecto REQUIRED)
 find_package(object_recognition REQUIRED)
 
-ecto_python_env_gen(${CMAKE_LIBRARY_OUTPUT_DIRECTORY} ${CMAKE_CURRENT_SOURCE_DIR}/python)
 include_directories(
   include
   ${EIGEN_INCLUDE_DIRS}
