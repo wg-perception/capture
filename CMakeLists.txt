@@ -39,7 +39,6 @@ link_directories(${object_recognition_LIBRARY_DIRS})
 add_subdirectory(python)
 #add_subdirectory(src)
 add_subdirectory(cells)
-add_subdirectory(doc)
 
 #option(BUILD_TEST "Build tests" ON)
 #if(BUILD_TEST)
@@ -53,3 +52,6 @@ install(DIRECTORY apps/
         PATTERN "*.bag" EXCLUDE
         PATTERN "*.pyc" EXCLUDE
         )
+
+sphinx(${CMAKE_CURRENT_SOURCE_DIR}/doc doc)
+
