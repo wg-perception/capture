@@ -25,16 +25,19 @@ find_package(Boost REQUIRED)
 find_package(Eigen REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(ecto REQUIRED)
-find_package(object_recognition REQUIRED)
+find_package(object_recognition_core REQUIRED)
 
 include_directories(
-  include
-  ${EIGEN_INCLUDE_DIRS}
-  ${Boost_INCLUDE_DIRS}
-  ${object_recognition_INCLUDE_DIRS}
-  )
+    include
+)
 
-link_directories(${object_recognition_LIBRARY_DIRS})
+include_directories(SYSTEM
+    ${EIGEN_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIRS}
+    ${object_recognition_core_INCLUDE_DIRS}
+)
+
+link_directories(${object_recognition_core_LIBRARY_DIRS})
 
 add_subdirectory(python)
 #add_subdirectory(src)

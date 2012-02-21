@@ -6,10 +6,9 @@ ectomodule(capture
   )
 
 link_ecto(capture
-  object_recognition_db
-  opencv_core
-  opencv_calib3d
-  )
+    object_recognition_core_db
+    opencv_core
+    opencv_calib3d
+)
 
 install_ecto_module(capture)
-
