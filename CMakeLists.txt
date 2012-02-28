@@ -56,5 +56,4 @@ install(DIRECTORY apps/
         PATTERN "*.pyc" EXCLUDE
         )
 
-catkin_sphinx(${CMAKE_CURRENT_SOURCE_DIR}/doc doc)
-
+#catkin_sphinx(${CMAKE_CURRENT_SOURCE_DIR}/doc doc)
