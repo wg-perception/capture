@@ -39,6 +39,12 @@ include_directories(SYSTEM
 
 link_directories(${object_recognition_core_LIBRARY_DIRS})
 
+if(NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+endif()
+
+set(python_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PYTHON_PACKAGES_PATH}/capture)
+
 add_subdirectory(python)
 #add_subdirectory(src)
 add_subdirectory(cells)

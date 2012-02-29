@@ -1,7 +1,7 @@
-execute_process(COMMAND mkdir -p ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/capture)
-execute_process(COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/capture/__init__.py
-  WORKING_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/capture
-  )
+execute_process(COMMAND mkdir -p ${python_LIBRARY_OUTPUT_DIRECTORY})
+execute_process(COMMAND ln -sf ${python_LIBRARY_OUTPUT_DIRECTORY}/__init__.py
+                WORKING_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+)
 
 #install targets for all things python
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/capture
