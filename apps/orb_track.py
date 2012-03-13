@@ -11,7 +11,7 @@ from ecto.opts import scheduler_options, run_plasm, cell_options
 from image_pipeline.io.source import create_source
 
 
-from object_recognition.common.io.source import Source, SourceTypes
+from object_recognition_core.io import Source, SourceTypes
 from capture.orb_capture import OrbPoseEstimator
 
 if __name__ == '__main__':

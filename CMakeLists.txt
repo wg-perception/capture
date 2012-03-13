@@ -46,14 +46,13 @@ endif()
 set(python_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PYTHON_PACKAGES_PATH}/capture)
 
 add_subdirectory(python)
-#add_subdirectory(src)
 add_subdirectory(cells)
 
-#option(BUILD_TEST "Build tests" ON)
-#if(BUILD_TEST)
-#  enable_testing()
-#  add_subdirectory(test)
-#endif()
+option(BUILD_TEST "Build tests" ON)
+if(BUILD_TEST)
+  enable_testing()
+  add_subdirectory(test)
+endif()
 
 install(DIRECTORY apps/
         DESTINATION bin
