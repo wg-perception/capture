@@ -1,13 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 project(capture)
-set(${PROJECT_NAME}_MAJOR_VERSION 0)
-set(${PROJECT_NAME}_MINOR_VERSION 1)
-set(${PROJECT_NAME}_PATCH_VERSION 0)
-set(${PROJECT_NAME}_SOVERSION 
-  ${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION}
-)
-set(${PROJECT_NAME}_VERSION 
-  ${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION}.${${PROJECT_NAME}_PATCH_VERSION}
+catkin_stack()
+catkin_project(capture
+               INCLUDE_DIRS capture
 )
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -27,17 +22,13 @@ find_package(OpenCV REQUIRED)
 find_package(ecto REQUIRED)
 find_package(object_recognition_core REQUIRED)
 
-include_directories(
-    include
-)
+include_directories(include)
 
 include_directories(SYSTEM
     ${EIGEN_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
     ${object_recognition_core_INCLUDE_DIRS}
 )
-
-link_directories(${object_recognition_core_LIBRARY_DIRS})
 
 if(NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
   set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -62,3 +53,6 @@ install(DIRECTORY apps/
         )
 
 #catkin_sphinx(${CMAKE_CURRENT_SOURCE_DIR}/doc doc)
+
+catkin_add_env_hooks(10.capture SHELLS all )
+

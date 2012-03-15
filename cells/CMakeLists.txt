@@ -1,5 +1,8 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-#deal with the objcog module
+
+#deal with the capture cells
+set_ecto_install_package_name(capture/ecto_cells)
+
 ectomodule(capture
   module.cpp
   DeltaRT.cpp
