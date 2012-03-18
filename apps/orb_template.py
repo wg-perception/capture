@@ -1,18 +1,17 @@
 #!/usr/bin/env python
-import roscompat
-import ecto
-from ecto_opencv.highgui import VideoCapture, imshow, FPSDrawer, MatPrinter, MatWriter, ImageSaver
-from ecto_opencv.features2d import ORB, DrawKeypoints, Matcher, MatchRefinement, MatchRefinement3d, DrawMatches
-
-from ecto_opencv.imgproc import cvtColor, Conversion
-from ecto_opencv.calib import LatchMat, Select3d, Select3dRegion, PlaneFitter, PoseDrawer, DepthValidDraw
-from image_pipeline.io.source import create_source
-import argparse
-from ecto.opts import scheduler_options, run_plasm
-import ecto_ros
-import sys
-import os
 from capture.orb_capture import *
+from ecto.opts import scheduler_options, run_plasm
+from ecto_opencv.calib import LatchMat, Select3d, Select3dRegion, PlaneFitter, PoseDrawer, DepthValidDraw
+from ecto_opencv.features2d import ORB, DrawKeypoints, Matcher, MatchRefinement, MatchRefinement3d, DrawMatches
+from ecto_opencv.highgui import VideoCapture, imshow, FPSDrawer, MatPrinter, MatWriter, ImageSaver
+from ecto_opencv.imgproc import cvtColor, Conversion
+from ecto_openni import SXGA_RES, FPS_15
+from ecto_image_pipeline.io.source import create_source
+import argparse
+import ecto
+import os
+import roscompat
+import sys
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Computes the ORB feature and descriptor template that may be used as a fiducial marker.')
@@ -32,7 +31,6 @@ options = parse_args()
 plasm = ecto.Plasm()
 
 #setup the input source, grayscale conversion
-from ecto_openni import SXGA_RES, FPS_15
 source = create_source('image_pipeline','OpenNISource',image_mode=SXGA_RES,image_fps=FPS_15)
 rgb2gray = cvtColor (flag=Conversion.RGB2GRAY)
 
@@ -94,6 +92,5 @@ for y, x in (
 plasm.connect(orb_display['save'] >> image_writer['__test__'],
               source['image'] >> image_writer['image']
               )
-#if 'ros' in options.type:
-#  ecto_ros.init(sys.argv, 'orb_template')
+
 run_plasm(options, plasm, locals=vars())
