@@ -5,6 +5,7 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/capture
   FILES_MATCHING PATTERN "*.py"
 )
 
+# we want the split version for buildspace as sources are in two directories
 configure_file(__init__.py.split.in
                ${python_LIBRARY_OUTPUT_DIRECTORY}/__init__.py
                @ONLY
@@ -14,9 +15,10 @@ configure_file(__init__.py.plain.in
                @ONLY
 )
 
-install(FILES ${python_LIBRARY_OUTPUT_DIRECTORY}/__init__.py
+# we actually want the plain one for install
+install(FILES ${python_LIBRARY_OUTPUT_DIRECTORY}/ecto_cells/__init__.py
         DESTINATION ${PYTHON_PACKAGES_PATH}/object_recognition_core
 )
 install(FILES ${python_LIBRARY_OUTPUT_DIRECTORY}/ecto_cells/__init__.py
-        DESTINATION ${PYTHON_PACKAGES_PATH}/object_recognition_core/eco_cells
+        DESTINATION ${PYTHON_PACKAGES_PATH}/object_recognition_core/ecto_cells
 )

@@ -14,4 +14,4 @@ link_ecto(capture
     opencv_calib3d
 )
 
-install_ecto_module(capture)
+install_ecto_module(capture/ecto_cells)
