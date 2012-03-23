@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import roscompat
 from capture.orb_capture import *
 from ecto.opts import scheduler_options, run_plasm
 from ecto_opencv.calib import LatchMat, Select3d, Select3dRegion, PlaneFitter, PoseDrawer, DepthValidDraw
@@ -10,7 +11,6 @@ from ecto_image_pipeline.io.source import create_source
 import argparse
 import ecto
 import os
-import roscompat
 import sys
 
 def parse_args():
