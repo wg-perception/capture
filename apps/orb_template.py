@@ -77,7 +77,7 @@ points_writer = ecto.If("Points writer", cell=MatWriter(filename=os.path.join(op
 descriptor_writer = ecto.If("Descriptor writer", cell=MatWriter(filename=os.path.join(options.output, 'descriptors.yaml')))
 R_writer = ecto.If("R writer", cell=MatWriter(filename=os.path.join(options.output, 'R.yaml')))
 T_writer = ecto.If("T writer", cell=MatWriter(filename=os.path.join(options.output, 'T.yaml')))
-image_writer = ecto.If(cell=ImageSaver(filename=os.path.join(options.output, 'train.png')))
+image_writer = ecto.If(cell=ImageSaver(filename_param=os.path.join(options.output, 'train.png')))
 
 for y, x in (
             (orb['points3d'], points3d_writer),
