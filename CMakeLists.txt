@@ -5,12 +5,6 @@ catkin_project(capture
                INCLUDE_DIRS capture
 )
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
-      "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
-      FORCE)
-endif()
-
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
@@ -21,6 +15,8 @@ find_package(Eigen REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(ecto REQUIRED)
 find_package(object_recognition_core REQUIRED)
+
+set_ecto_install_package_name(capture)
 
 include_directories(include)
 
@@ -34,8 +30,7 @@ if(NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
   set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif()
 
-set(python_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PYTHON_PACKAGES_PATH}/capture)
-
+catkin_python_setup()
 add_subdirectory(python)
 add_subdirectory(cells)
 
@@ -53,6 +48,3 @@ install(DIRECTORY apps/
         )
 
 #catkin_sphinx(${CMAKE_CURRENT_SOURCE_DIR}/doc doc)
-
-catkin_add_env_hooks(10.capture SHELLS all )
-
