@@ -1,4 +1,6 @@
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+find_package(object_recognition_core REQUIRED)
+
+include_directories(SYSTEM ${object_recognition_core_INCLUDE_DIRS})
 
 #deal with the capture cells
 set_ecto_install_package_name(capture/ecto_cells)
@@ -9,9 +11,9 @@ ectomodule(capture
   )
 
 link_ecto(capture
-    object_recognition_core_db
-    opencv_core
-    opencv_calib3d
+          ${object_recognition_core_LIBRARIES}
+          ${OpenCV_LIBS}
+          ${OpenCV_LIBRARIES}
 )
 
 install_ecto_module(capture)
