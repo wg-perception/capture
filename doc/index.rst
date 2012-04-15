@@ -8,7 +8,6 @@ Object capture tools.
 .. highlight:: ectosh
 
 .. toctree::
-  
   :maxdepth 1
   
   reference.rst
@@ -150,7 +149,7 @@ Press 'q' to quit early.
 
 Remember to query the program for help if you are lost:
 
-.. program-output:: apps/capture --help
+.. program-output:: ../../capture/apps/capture --help
    :in_srcdir:
    :until: Scheduler Options:
 
