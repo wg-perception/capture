@@ -8,7 +8,7 @@ Object capture tools.
 .. highlight:: ectosh
 
 .. toctree::
-  :maxdepth 1
+  :maxdepth: 1
   
   reference.rst
   
