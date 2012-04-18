@@ -1,12 +1,14 @@
 cmake_minimum_required(VERSION 2.8)
 project(capture)
+find_package(catkin QUIET)
+if (NOT catkin_FOUND)
+  return()
+endif()
+
 catkin_stack()
 catkin_project(capture
                INCLUDE_DIRS capture
 )
-
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 add_definitions("-Wall -Werror -Wl,--no-undefined ")
 
@@ -26,10 +28,6 @@ include_directories(SYSTEM
     ${object_recognition_core_INCLUDE_DIRS}
 )
 
-if(NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
-  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-endif()
-
 catkin_python_setup()
 add_subdirectory(python)
 add_subdirectory(cells)
@@ -45,6 +43,6 @@ install(DIRECTORY apps/
         USE_SOURCE_PERMISSIONS
         PATTERN "*.bag" EXCLUDE
         PATTERN "*.pyc" EXCLUDE
-        )
+)
 
 #catkin_sphinx(${CMAKE_CURRENT_SOURCE_DIR}/doc doc)
