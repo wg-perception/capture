@@ -1,24 +1,26 @@
 cmake_minimum_required(VERSION 2.8)
 project(capture)
 find_package(catkin QUIET)
-if (NOT catkin_FOUND)
-  return()
+if (catkin_FOUND)
+  catkin_stack()
+  catkin_project(capture
+                 INCLUDE_DIRS capture
+  )
 endif()
-
-catkin_stack()
-catkin_project(capture
-               INCLUDE_DIRS capture
-)
 
 add_definitions("-Wall -Werror -Wl,--no-undefined ")
 
 find_package(Boost REQUIRED)
-find_package(Eigen REQUIRED)
 find_package(OpenCV REQUIRED)
-find_package(ecto REQUIRED)
-find_package(object_recognition_core REQUIRED)
 
-set_ecto_install_package_name(capture)
+# if we are on ROS
+if (catkin_FOUND)
+  find_package(Eigen REQUIRED)
+  find_package(ecto REQUIRED)
+  find_package(object_recognition_core REQUIRED)
+
+  set_ecto_install_package_name(capture)
+endif()
 
 include_directories(include)
 
@@ -28,14 +30,16 @@ include_directories(SYSTEM
     ${object_recognition_core_INCLUDE_DIRS}
 )
 
-catkin_python_setup()
-add_subdirectory(python)
-add_subdirectory(cells)
+if (catkin_FOUND)
+  catkin_python_setup()
+  add_subdirectory(python)
+  add_subdirectory(cells)
 
-option(BUILD_TEST "Build tests" ON)
-if(BUILD_TEST)
-  enable_testing()
-  add_subdirectory(test)
+  option(BUILD_TEST "Build tests" ON)
+  if(BUILD_TEST)
+    enable_testing()
+    add_subdirectory(test)
+  endif()
 endif()
 
 install(DIRECTORY apps/
