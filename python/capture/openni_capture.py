@@ -1,6 +1,6 @@
 from .orb_capture import OrbPoseEstimator
 from ecto_opencv import highgui, calib, imgproc
-from ecto_ros.ecto_ros import Cv2CameraInfo
+from ecto_ros import Cv2CameraInfo, Mat2Image, RT2PoseStamped
 from fiducial_pose_est import OpposingDotPoseEstimator
 from ecto_image_pipeline.base import CameraModelToCv
 from ecto_image_pipeline.io.source import create_source
@@ -78,8 +78,6 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
     @param bag_name: A filename for the bag, will write to this file.
     @param angle_thresh: The angle threshhold in radians to sparsify the views with.  
     '''
-    from ecto_ros import Mat2Image, RT2PoseStamped
-
     graph = []
 
     from ecto_openni import SXGA_RES, FPS_15
