@@ -16,11 +16,15 @@ Object capture tools.
 3d Camera
 ---------
 
-.. toggle1:: click here for ROS instructions
+.. toggle_table::
+    :arg1: Non-ROS
+    :arg2: ROS
+
+.. toggle:: Non-ROS
 
     Start your 3d sensor (Kinect, ASUS ...)
 
-.. toggle2:: click here for non-ROS instructions
+.. toggle:: ROS
 
     The ROS drivers for openni are used to capture a view sparse bag of data.
     Please make sure you are on ``electric`` or the drivers.
@@ -78,7 +82,7 @@ If you are not inclined to print something out, you may use any highly textured 
 This involves capturing a connonical view of said surface, and then it may be used to establish an
 object coordinate system, and perform segmentation.
 
-First capture an ORB template of your capture workspace. It should be take from an planar frontal view, and the center
+First capture an ORB template of your capture workspace. It should be taken from a planar frontal view, and the center
 of the image should be filled by the plane. Press 's' to save an image. The result will be placed in the directory
 given, e.g. my_textured_plane. Press 'q' to quit the template capture program.::
 
@@ -112,13 +116,17 @@ evenly distributed in a view pose sphere.
 
 Run the capture program in preview mode and make sure the mask and pose are being picked up.
 
-.. toggle1:: click here for ROS instructions
+..toggle_table::
+    :arg1: Non-ROS
+    :arg2: ROS
+
+.. toggle:: Non-ROS
 
     ::
 
        % apps/capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag --preview
 
-.. toggle2:: click here for non-ROS instructions
+.. toggle:: ROS
 
     ::
 
@@ -135,13 +143,17 @@ where each view is normally distributed on the view sphere. The mask and pose di
 when a novel view is captured.  The program will finish when 35 (-n) views are captured.
 Press 'q' to quit early.
 
-.. toggle1:: click here for ROS instructions
+.. toggle_table:
+    :arg1: Non-ROS
+    :arg2: ROS
+
+.. toggle:: Non-ROS
 
     ::
 
        % apps/capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag
 
-.. toggle2:: click here for non-ROS instructions
+.. toggle:: ROS
 
     ::
 
