@@ -13,6 +13,8 @@ add_definitions("-Wall -Werror -Wl,--no-undefined ")
 find_package(Boost REQUIRED)
 find_package(OpenCV REQUIRED)
 
+add_subdirectory(src)
+
 # if we are on ROS
 if (catkin_FOUND)
   find_package(Eigen REQUIRED)
