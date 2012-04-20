@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import roscompat
 import ecto
-import ecto_ros
 
 from ecto_opencv.highgui import VideoCapture, imshow, FPSDrawer, MatPrinter, MatWriter
 from ecto_opencv.features2d import ORB, DrawKeypoints, Matcher, MatchRefinement, MatchRefinementHSvd, MatchRefinement3d, MatchRefinementPnP, DrawMatches
@@ -51,7 +50,5 @@ if __name__ == '__main__':
     display = imshow('orb display', name='Pose')
     plasm.connect(pose_est['debug_image'] >> display['image'],
                   )
-#    if 'ros' in options.type:
-#      ecto_ros.init(sys.argv, 'orb_track')
 
     run_plasm(options, plasm, locals=vars())
