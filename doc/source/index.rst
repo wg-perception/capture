@@ -138,7 +138,7 @@ evenly distributed in a view pose sphere.
 
 Run the capture program in preview mode and make sure the mask and pose are being picked up.
 
-..toggle_table::
+.. toggle_table::
     :arg1: Non-ROS
     :arg2: ROS
 
