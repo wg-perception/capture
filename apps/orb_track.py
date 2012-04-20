@@ -2,19 +2,14 @@
 import roscompat
 import ecto
 
-from ecto_opencv.highgui import VideoCapture, imshow, FPSDrawer, MatPrinter, MatWriter
-from ecto_opencv.features2d import ORB, DrawKeypoints, Matcher, MatchRefinement, MatchRefinementHSvd, MatchRefinement3d, MatchRefinementPnP, DrawMatches
+from ecto_opencv.highgui import imshow
 from ecto_opencv.imgproc import cvtColor, Conversion
-from ecto_opencv.calib import LatchMat, Select3d, Select3dRegion, PlaneFitter, PoseDrawer, DepthValidDraw, TransformCompose
 from ecto.opts import scheduler_options, run_plasm, cell_options
 from ecto_image_pipeline.io.source import create_source
 
-
-from object_recognition_core.io import Source
 from capture.orb_capture import OrbPoseEstimator
 
 if __name__ == '__main__':
-    import sys
     def parse_args():
         import argparse
         parser = argparse.ArgumentParser(description='Estimate the pose of an ORB template.')

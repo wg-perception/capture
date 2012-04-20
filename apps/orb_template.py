@@ -2,16 +2,15 @@
 import roscompat
 from capture.orb_capture import *
 from ecto.opts import scheduler_options, run_plasm
-from ecto_opencv.calib import LatchMat, Select3d, Select3dRegion, PlaneFitter, PoseDrawer, DepthValidDraw
-from ecto_opencv.features2d import ORB, DrawKeypoints, Matcher, MatchRefinement, MatchRefinement3d, DrawMatches
-from ecto_opencv.highgui import VideoCapture, imshow, FPSDrawer, MatPrinter, MatWriter, ImageSaver
+from ecto_opencv.calib import PoseDrawer, DepthValidDraw
+from ecto_opencv.features2d import DrawKeypoints
+from ecto_opencv.highgui import imshow, FPSDrawer, MatWriter, ImageSaver
 from ecto_opencv.imgproc import cvtColor, Conversion
 from ecto_openni import SXGA_RES, FPS_15
 from ecto_image_pipeline.io.source import create_source
 import argparse
 import ecto
 import os
-import sys
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Computes the ORB feature and descriptor template that may be used as a fiducial marker.')
