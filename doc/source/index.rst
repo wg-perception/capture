@@ -102,13 +102,13 @@ object coordinate system, and perform segmentation.
 
 First capture an ORB template of your capture workspace. It should be taken from a planar frontal view, and the center
 of the image should be filled by the plane. Press 's' to save an image. The result will be placed in the directory
-given, e.g. my_textured_plane. Press 'q' to quit the template capture program.::
+given, e.g. my_textured_plane. Press 'q' to quit the template capture program.
 
 .. code-block:: sh
 
     rosrun object_recognition_core orb_template.py -o my_textured_plane
 
-Try out tracking to see if you got a good template. Press 'q' to quit.::
+Try out tracking to see if you got a good template. Press 'q' to quit.
 
 .. code-block:: sh
 
@@ -167,7 +167,7 @@ where each view is normally distributed on the view sphere. The mask and pose di
 when a novel view is captured.  The program will finish when 35 (-n) views are captured.
 Press 'q' to quit early.
 
-.. toggle_table:
+.. toggle_table::
     :arg1: Non-ROS
     :arg2: ROS
 
