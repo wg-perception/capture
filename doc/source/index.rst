@@ -18,27 +18,45 @@ Object capture tools.
 
 .. toggle_table::
     :arg1: Non-ROS
-    :arg2: ROS
+    :arg2: Electric
+    :arg3: Fuerte
 
 .. toggle:: Non-ROS
 
     Start your 3d sensor (Kinect, ASUS ...)
 
-.. toggle:: ROS
+.. toggle:: Electric
 
     The ROS drivers for openni are used to capture a view sparse bag of data.
-    Please make sure you are on ``electric`` or the drivers.
 
-    See http://www.ros.org/wiki/electric/Installation/Ubuntu and http://ros.org/wiki/openni
-    for detailed instructions.
+    Before you start capturing data, please start up the ROS OpenNI driver:
 
-    Before you start capturing data, please start up the ROS OpenNI driver::
+    .. code-block:: sh
 
-       % roslaunch openni_camera openni_node.launch
+       roslaunch openni_camera openni_node.launch
 
-    It may be preferable to use the SXGA (roughly 1 megapixel) mode of your openni device if possible.::
+    It may be preferable to use the SXGA (roughly 1 megapixel) mode of your openni device if possible.
 
-       % rosrun dynamic_reconfigure dynparam set /openni_node1 image_mode 1
+    .. code-block:: sh
+
+       rosrun dynamic_reconfigure dynparam set /openni_node1 image_mode 1
+
+
+.. toggle:: Fuerte
+
+    The ROS drivers for openni are used to capture a view sparse bag of data.
+
+    Before you start capturing data, please start up the ROS OpenNI driver:
+
+    .. code-block:: sh
+
+       roslaunch openni_launch openni.launch 
+
+    It may be preferable to use the SXGA (roughly 1 megapixel) mode of your openni device if possible.  
+
+    .. code-block:: sh
+
+       rosrun dynamic_reconfigure dynparam set /camera/driver image_mode 1
 
 setup
 -----
@@ -86,11 +104,15 @@ First capture an ORB template of your capture workspace. It should be taken from
 of the image should be filled by the plane. Press 's' to save an image. The result will be placed in the directory
 given, e.g. my_textured_plane. Press 'q' to quit the template capture program.::
 
-   % rosrun object_recognition_core orb_template.py -o my_textured_plane
+.. code-block:: sh
+
+    rosrun object_recognition_core orb_template.py -o my_textured_plane
 
 Try out tracking to see if you got a good template. Press 'q' to quit.::
 
-   % rosrun object_recognition_core orb_track.py --track_directory my_textured_plane
+.. code-block:: sh
+
+    rosrun object_recognition_core orb_track.py --track_directory my_textured_plane
 
 capture
 -------
@@ -120,17 +142,19 @@ Run the capture program in preview mode and make sure the mask and pose are bein
     :arg1: Non-ROS
     :arg2: ROS
 
+If you don't have a pattern and use the dot pattern, ommit the ``-i`` option below:
+
 .. toggle:: Non-ROS
 
-    ::
+    .. code-block:: sh
 
-       % apps/capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag --preview
+        apps/capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag --preview
 
 .. toggle:: ROS
 
-    ::
+    .. code-block:: sh
 
-       % rosrun object_recognition_core capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag --preview
+        rosrun object_recognition_core capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag --preview
 
 You should see an popup image similar to the following:
 
@@ -149,19 +173,19 @@ Press 'q' to quit early.
 
 .. toggle:: Non-ROS
 
-    ::
+    .. code-block:: sh
 
-       % apps/capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag
+        apps/capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag
 
 .. toggle:: ROS
 
-    ::
+    .. code-block:: sh
 
-       % rosrun object_recognition_core capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag
+        rosrun object_recognition_core capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag
 
 Remember to query the program for help if you are lost:
 
-.. program-output:: ../../capture/apps/capture --help
+.. program-output:: apps/capture --help
    :in_srcdir:
    :until: Scheduler Options:
 
@@ -173,8 +197,8 @@ these bags as seperate "sessions" of the same object.
 
 There is a convenience script for this called ``concat.py``
 
-.. .. program-output:: apps/bagscripts/concat.py --help
-..   :in_srcdir:
+.. program-output:: apps/bagscripts/concat.py --help
+    :in_srcdir:
 
 upload
 ------
@@ -198,7 +222,7 @@ Now that the bag is uploaded, into the database, you can see it in the db by bro
 
 command line interface
 ++++++++++++++++++++++
-.. .. program-output:: apps/upload --help
+.. program-output:: apps/upload --help
    :in_srcdir:
    :until: Scheduler Options:
 
