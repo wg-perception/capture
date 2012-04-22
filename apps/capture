@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 import roscompat
-import ecto
-import ecto_ros
-import capture
 
 from capture import openni_capture
 
@@ -48,9 +45,9 @@ object sparsely, depending on the angle_thresh setting.'''),
     scheduler_options(group, default_scheduler='Singlethreaded')
     args = parser.parse_args()
     if not args.preview and len(args.bag) < 1:
-      parser.print_help()
-      print '\nYou must supply a bag name, or run in --preview mode'
-      sys.exit(1)
+        parser.print_help()
+        print '\nYou must supply a bag name, or run in --preview mode'
+        sys.exit(1)
     args.segmentation_factory = segmentation_factory
     return args
 
