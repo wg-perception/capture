@@ -7,8 +7,7 @@ from ecto_image_pipeline.io.source import create_source
 import capture
 import ecto
 import ecto_ros
-from ecto_ros.ecto_sensor_msgs import Subscriber_Image as ImageSub, Subscriber_CameraInfo as CameraInfoSub, \
-            Bagger_Image as ImageBagger, Bagger_CameraInfo as CameraInfoBagger
+from ecto_ros.ecto_sensor_msgs import Bagger_Image as ImageBagger, Bagger_CameraInfo as CameraInfoBagger
 from ecto_ros.ecto_geometry_msgs import Bagger_PoseStamped as PoseBagger
 import math
 import time

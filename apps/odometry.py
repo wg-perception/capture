@@ -60,14 +60,18 @@ if __name__ == '__main__':
     from ecto_openni import SXGA_RES, FPS_15
     source = create_source('image_pipeline','OpenNISource',image_mode=SXGA_RES,image_fps=FPS_15)
     rgb2gray = cvtColor('Grayscale', flag=Conversion.RGB2GRAY)
-    odometry= Odometry()
+    odometry = Odometry()
+    
 
     plasm.connect(source['image'] >> rgb2gray ['image'])
 
     #connect up the pose_est
     plasm.connect(rgb2gray['image'] >> odometry['image'],
                   source['depth'] >> odometry['depth'],
-                  source['K'] >> odometry['K']
+                  source['K'] >> odometry['K'],
                   )
+    
+    # display the warped image
+    plasm.connect(odometry['image'] >> imshow(name='warped')[:])
 
     run_plasm(options, plasm, locals=vars())

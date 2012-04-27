@@ -42,6 +42,70 @@
 
 using ecto::tendrils;
 
+using namespace cv;
+using namespace std;
+
+static
+void
+cvtDepth2Cloud(const Mat& depth, Mat& cloud, const Mat& cameraMatrix)
+{
+  const float inv_fx = 1.f / cameraMatrix.at<float>(0, 0);
+  const float inv_fy = 1.f / cameraMatrix.at<float>(1, 1);
+  const float ox = cameraMatrix.at<float>(0, 2);
+  const float oy = cameraMatrix.at<float>(1, 2);
+  cloud.create(depth.size(), CV_32FC3);
+  for (int y = 0; y < cloud.rows; y++)
+  {
+    Point3f* cloud_ptr = (Point3f*) cloud.ptr(y);
+    const float* depth_prt = (const float*) depth.ptr(y);
+    for (int x = 0; x < cloud.cols; x++)
+    {
+      float z = depth_prt[x];
+      cloud_ptr[x].x = (x - ox) * z * inv_fx;
+      cloud_ptr[x].y = (y - oy) * z * inv_fy;
+      cloud_ptr[x].z = z;
+    }
+  }
+}
+
+template<class ImageElemType>
+static void
+warpImage(const cv::Mat& image, const Mat& depth, const Mat& Rt, const Mat& cameraMatrix, const Mat& distCoeff,
+          Mat& warpedImage)
+{
+  const Rect rect = Rect(0, 0, image.cols, image.rows);
+
+  vector<Point2f> points2d;
+  Mat cloud, transformedCloud;
+
+  cvtDepth2Cloud(depth, cloud, cameraMatrix);
+  perspectiveTransform(cloud, transformedCloud, Rt);
+  projectPoints(transformedCloud.reshape(3, 1), Mat::eye(3, 3, CV_64FC1), Mat::zeros(3, 1, CV_64FC1), cameraMatrix,
+                distCoeff, points2d);
+
+  Mat pointsPositions(points2d);
+  pointsPositions = pointsPositions.reshape(2, image.rows);
+
+  warpedImage.create(image.size(), image.type());
+  warpedImage = Scalar::all(0);
+
+  Mat zBuffer(image.size(), CV_32FC1, FLT_MAX);
+  for (int y = 0; y < image.rows; y++)
+  {
+    for (int x = 0; x < image.cols; x++)
+    {
+      const Point3f p3d = transformedCloud.at<Point3f>(y, x);
+      const Point p2d = pointsPositions.at<Point2f>(y, x);
+      if (!cvIsNaN(cloud.at<Point3f>(y, x).z) && cloud.at<Point3f>(y, x).z > 0 && rect.contains(p2d)
+          && zBuffer.at<float>(p2d) > p3d.z)
+      {
+        warpedImage.at<ImageElemType>(p2d) = image.at<ImageElemType>(y, x);
+        zBuffer.at<float>(p2d) = p3d.z;
+      }
+    }
+  }
+}
+
 namespace capture
 {
   struct Odometry
@@ -62,6 +126,7 @@ namespace capture
 
       outputs.declare(&Odometry::R_, "R", "The rotation of the camera pose with respect to the previous frame.");
       outputs.declare(&Odometry::T_, "T", "The rotation of the camera pose with respect to the previous frame.");
+      outputs.declare(&Odometry::warp_, "image", "The warped previous image.");
     }
     void
     configure(const tendrils& params, const tendrils& inputs, const tendrils& outputs)
@@ -131,6 +196,14 @@ namespace capture
       current_image_gray.copyTo(previous_image_gray_);
       current_depth_meters.copyTo(previous_depth_meters_);
 
+      // Just for display
+      cv::Mat warpedImage0;
+      const Mat distCoeff(1,5,CV_32FC1,Scalar(0));
+      warpImage<Point3_<uchar> >(previous_image_gray_, previous_depth_meters_, Rt, cameraMatrix, distCoeff,
+                                 warpedImage0);
+
+      *warp_ = warpedImage0;
+
       return ecto::OK;
     }
 
@@ -139,6 +212,7 @@ namespace capture
     ecto::spore<cv::Mat> current_depth_;
     cv::Mat previous_image_gray_;
     cv::Mat previous_depth_meters_;
+    ecto::spore<cv::Mat> warp_;
 
     /** The output rotation matrix */
     ecto::spore<cv::Mat> R_;
