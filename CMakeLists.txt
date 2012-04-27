@@ -20,7 +20,7 @@ if (catkin_FOUND)
   find_package(ecto REQUIRED)
   find_package(object_recognition_core REQUIRED)
 
-  set_ecto_install_package_name(capture)
+  set_ecto_install_package_name(${PROJECT_NAME})
 endif()
 
 include_directories(include)
