@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
-project(capture)
+project(object_recognition_capture)
 find_package(catkin QUIET)
 if (catkin_FOUND)
   catkin_stack()
-  catkin_project(capture
-                 INCLUDE_DIRS capture
+  catkin_project(object_recognition_capture
   )
 endif()
 
