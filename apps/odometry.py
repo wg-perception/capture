@@ -57,16 +57,17 @@ if __name__ == '__main__':
     plasm = ecto.Plasm()
 
     #setup the input source, grayscale conversion
-    from ecto_openni import SXGA_RES, FPS_15
-    source = create_source('image_pipeline','OpenNISource',image_mode=SXGA_RES,image_fps=FPS_15)
+    from ecto_openni import VGA_RES, FPS_30
+    source = create_source('image_pipeline','OpenNISource',image_mode=VGA_RES,image_fps=FPS_30)
+    #from ecto_openni import SXGA_RES, FPS_15
+    #source = create_source('image_pipeline','OpenNISource',image_mode=SXGA_RES,image_fps=FPS_15)
     rgb2gray = cvtColor('Grayscale', flag=Conversion.RGB2GRAY)
     odometry = Odometry()
-    
 
     plasm.connect(source['image'] >> rgb2gray ['image'])
 
     #connect up the pose_est
-    plasm.connect(rgb2gray['image'] >> odometry['image'],
+    plasm.connect(source['image'] >> odometry['image'],
                   source['depth'] >> odometry['depth'],
                   source['K'] >> odometry['K'],
                   )

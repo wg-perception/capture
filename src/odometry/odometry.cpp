@@ -90,12 +90,13 @@ warpImage(const cv::Mat& image, const Mat& depth, const Mat& Rt, const Mat& came
   warpedImage = Scalar::all(0);
 
   Mat zBuffer(image.size(), CV_32FC1, FLT_MAX);
+
   for (int y = 0; y < image.rows; y++)
   {
     for (int x = 0; x < image.cols; x++)
     {
       const Point3f p3d = transformedCloud.at<Point3f>(y, x);
-      const Point p2d = pointsPositions.at<Point2f>(y, x);
+      const Point2i p2d = pointsPositions.at<Point2f>(y, x);
       if (!cvIsNaN(cloud.at<Point3f>(y, x).z) && cloud.at<Point3f>(y, x).z > 0 && rect.contains(p2d)
           && zBuffer.at<float>(p2d) > p3d.z)
       {
@@ -137,11 +138,17 @@ namespace capture
     process(const tendrils& inputs, const tendrils& outputs)
     {
       // Convert the current image to grayscale
-      cv::Mat current_image_gray;
+      cv::Mat current_image_gray, current_image;
       if (current_image_->channels() == 3)
+      {
         cv::cvtColor(*current_image_, current_image_gray, CV_BGR2GRAY);
+        current_image_->copyTo(current_image);
+      }
       else
-        current_image_gray = *current_image_;
+      {
+        current_image_->copyTo(current_image_gray);
+        cv::merge(std::vector<cv::Mat>(3, *current_image_), current_image);
+      }
 
       // Change the depth to meters
       cv::Mat current_depth_meters;
@@ -150,8 +157,9 @@ namespace capture
       // Odometry is only possible when we have a previous frame
       if (previous_image_gray_.empty())
       {
-        current_image_gray.copyTo(previous_image_gray_);
-        current_depth_meters.copyTo(previous_depth_meters_);
+        previous_image_ = current_image;
+        previous_image_gray_ = current_image_gray;
+        previous_depth_meters_ = current_depth_meters;
         return ecto::OK;
       }
 
@@ -192,17 +200,17 @@ namespace capture
         return -1;
       }
 
-      // Keep track of the frames
-      current_image_gray.copyTo(previous_image_gray_);
-      current_depth_meters.copyTo(previous_depth_meters_);
-
       // Just for display
       cv::Mat warpedImage0;
-      const Mat distCoeff(1,5,CV_32FC1,Scalar(0));
-      warpImage<Point3_<uchar> >(previous_image_gray_, previous_depth_meters_, Rt, cameraMatrix, distCoeff,
-                                 warpedImage0);
+      const Mat distCoeff(1, 5, CV_32FC1, Scalar(0));
 
-      *warp_ = warpedImage0;
+      warpImage<Point3_<uchar> >(previous_image_, previous_depth_meters_, Rt, cameraMatrix, distCoeff, warpedImage0);
+      warpedImage0.copyTo(*warp_);
+
+      // Keep track of the frames
+      previous_image_ = current_image;
+      previous_image_gray_ = current_image_gray;
+      previous_depth_meters_ = current_depth_meters;
 
       return ecto::OK;
     }
@@ -211,6 +219,7 @@ namespace capture
     ecto::spore<cv::Mat> current_image_;
     ecto::spore<cv::Mat> current_depth_;
     cv::Mat previous_image_gray_;
+    cv::Mat previous_image_;
     cv::Mat previous_depth_meters_;
     ecto::spore<cv::Mat> warp_;
 
