@@ -40,7 +40,7 @@ from ecto_opencv.imgproc import cvtColor, Conversion
 from ecto.opts import run_plasm, scheduler_options
 from ecto_image_pipeline.io.source import create_source
 
-from capture.ecto_cells.odometry import Odometry
+from object_recognition_capture.ecto_cells.odometry import Odometry
 
 def parse_args():
     import argparse

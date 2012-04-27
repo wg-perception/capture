@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import roscompat
-from capture.orb_capture import *
+from object_recognition_capture.orb_capture import *
 from ecto.opts import scheduler_options, run_plasm
 from ecto_opencv.calib import PoseDrawer, DepthValidDraw
 from ecto_opencv.features2d import DrawKeypoints

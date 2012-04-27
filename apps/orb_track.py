@@ -7,7 +7,7 @@ from ecto_opencv.imgproc import cvtColor, Conversion
 from ecto.opts import scheduler_options, run_plasm, cell_options
 from ecto_image_pipeline.io.source import create_source
 
-from capture.orb_capture import OrbPoseEstimator
+from object_recognition_capture.orb_capture import OrbPoseEstimator
 
 if __name__ == '__main__':
     def parse_args():
