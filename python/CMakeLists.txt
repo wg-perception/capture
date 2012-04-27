@@ -4,5 +4,5 @@ configure_file(__init__.py.plain.in
 )
 
 install(FILES ${ecto_module_PYTHON_OUTPUT}/ecto_cells/__init__.py
-        DESTINATION ${PYTHON_PACKAGES_PATH}/capture/ecto_cells
+        DESTINATION ${PYTHON_PACKAGES_PATH}/object_recognition_capture/ecto_cells
 )
