@@ -18,7 +18,7 @@ The second point is currently done by segmenting out whatever is on top of the p
 ``capture`` uses the database infrastructure provided by ``object_recognition_core`` to store the captured data.
 
 3d Camera
-=========
+---------
 
 .. toggle_table::
     :arg1: Non-ROS
@@ -63,7 +63,7 @@ The second point is currently done by segmenting out whatever is on top of the p
        rosrun dynamic_reconfigure dynparam set /camera/driver image_mode 1
 
 Setup
-=====
+-----
 Capture is view based, and requires a fiducial that is rigidly attached to
 the object being observed.  This enables relatively accurate view point pose estimation,
 a consistent object coordinate frame, and simple object/background segmentation.
@@ -119,7 +119,7 @@ Try out tracking to see if you got a good template. Press 'q' to quit.
     rosrun object_recognition_core orb_track.py --track_directory my_textured_plane
 
 capture
-=======
+-------
 
 ``capture`` is the entry point for using the our object capture system.
 The capture program will estimate a pose per view, along with a depth based mask.
@@ -205,7 +205,7 @@ There is a convenience script for this called ``concat.py``
     :in_srcdir:
 
 upload
-======
+------
 Once you have captured a bag of views, you will want to upload the bag to the database.  This upload will contain all
 of the views in the bag, plus some meta information about the object. It assumed that each bag has one object,
 and this object has a consistent coordinate frame throughout the bag.
@@ -239,7 +239,7 @@ Some pre-acquired bags exist internally for now, just rsync them:
     rsync -vPa /wg/wgss0_shelf1/object_recognition_capture ./
 
 API
-===
+---
 
 To consult the API for the capture cells, please refer to:
 
