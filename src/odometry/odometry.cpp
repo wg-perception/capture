@@ -157,6 +157,9 @@ namespace capture
       // Odometry is only possible when we have a previous frame
       if (previous_image_gray_.empty())
       {
+        first_image_ = current_image;
+        first_depth_meters_ = current_depth_meters;
+        previous_pose_ = cv::Mat::eye(4, 4, CV_32F);
         previous_image_ = current_image;
         previous_image_gray_ = current_image_gray;
         previous_depth_meters_ = current_depth_meters;
@@ -186,9 +189,16 @@ namespace capture
       const float maxDepthDiff = 0.07f; //in meters
 
       tm.start();
+      /*bool isFound = cv::RGBDOdometry(Rt, cv::Mat(), previous_image_gray_, previous_depth_meters_, cv::Mat(),
+       current_image_gray, current_depth_meters, cv::Mat(), cameraMatrix, minDepth,
+       maxDepth, maxDepthDiff, iterCounts, minGradMagnitudes, cv::RIGID_BODY_MOTION);*/
+
       bool isFound = cv::RGBDOdometry(Rt, cv::Mat(), previous_image_gray_, previous_depth_meters_, cv::Mat(),
                                       current_image_gray, current_depth_meters, cv::Mat(), cameraMatrix, minDepth,
                                       maxDepth, maxDepthDiff, iterCounts, minGradMagnitudes, cv::RIGID_BODY_MOTION);
+      if (isFound)
+        previous_pose_ = cv::Mat_<float>(Rt) * previous_pose_;
+
       tm.stop();
 
       std::cout << "Rt = " << Rt << std::endl;
@@ -201,11 +211,17 @@ namespace capture
       }
 
       // Just for display
-      cv::Mat warpedImage0;
-      const Mat distCoeff(1, 5, CV_32FC1, Scalar(0));
+      if (isFound)
+      {
+        cv::Mat warpedImage0;
+        const Mat distCoeff(1, 5, CV_32FC1, Scalar(0));
 
-      warpImage<Point3_<uchar> >(previous_image_, previous_depth_meters_, Rt, cameraMatrix, distCoeff, warpedImage0);
-      warpedImage0.copyTo(*warp_);
+        //warpImage<Point3_<uchar> >(previous_image_, previous_depth_meters_, Rt, cameraMatrix, distCoeff, warpedImage0);
+        std::cout << previous_pose_ << std::endl;
+        warpImage<Point3_<uchar> >(first_image_, first_depth_meters_, previous_pose_, cameraMatrix, distCoeff,
+                                   warpedImage0);
+        warpedImage0.copyTo(*warp_);
+      }
 
       // Keep track of the frames
       previous_image_ = current_image;
@@ -218,9 +234,12 @@ namespace capture
     ecto::spore<cv::Mat> K_;
     ecto::spore<cv::Mat> current_image_;
     ecto::spore<cv::Mat> current_depth_;
+    cv::Mat first_image_;
+    cv::Mat first_depth_meters_;
     cv::Mat previous_image_gray_;
     cv::Mat previous_image_;
     cv::Mat previous_depth_meters_;
+    cv::Mat_<float> previous_pose_;
     ecto::spore<cv::Mat> warp_;
 
     /** The output rotation matrix */
