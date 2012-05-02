@@ -91,7 +91,7 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
                   source['mask'] >> poser['mask'],
                   ]
     rgb2gray = imgproc.cvtColor('rgb -> gray', flag=imgproc.Conversion.RGB2GRAY)
-    delta_pose = ecto.If('delta R|T', cell=capture.DeltaRT(angle_thresh=angle_thresh,
+    delta_pose = ecto.If('delta R|T', cell=object_recognition_capture.DeltaRT(angle_thresh=angle_thresh,
                                                           n_desired=n_desired))
 
     display = highgui.imshow(name='Poses')
