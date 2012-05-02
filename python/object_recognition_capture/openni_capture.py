@@ -4,7 +4,7 @@ from ecto_ros import Cv2CameraInfo, Mat2Image, RT2PoseStamped
 from fiducial_pose_est import OpposingDotPoseEstimator
 from ecto_image_pipeline.base import CameraModelToCv
 from ecto_image_pipeline.io.source import create_source
-import capture
+import object_recognition_capture
 import ecto
 import ecto_ros
 from ecto_ros.ecto_sensor_msgs import Bagger_Image as ImageBagger, Bagger_CameraInfo as CameraInfoBagger
