@@ -1,5 +1,5 @@
 Catkin-ProjectName: object_recognition_capture
-Version: 0.2.5
+Version: 0.2.6
 Description: Capture is a set of tools to capture objects in 3D and perform odometry
 Author: Ethan Rublee <erublee@willowgarage.com>, Vincent Rabaud <vrabaud@willowgarage.com>
 Maintainer:  Vincent Rabaud <vrabaud@willowgarage.com>
