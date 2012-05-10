@@ -12,7 +12,6 @@ find_package(OpenCV REQUIRED)
 add_subdirectory(src)
 
 # if we are on ROS
-find_package(Eigen REQUIRED)
 find_package(ecto REQUIRED)
 find_package(object_recognition_core REQUIRED)
 
@@ -21,7 +20,6 @@ set_ecto_install_package_name(${PROJECT_NAME})
 include_directories(include)
 
 include_directories(SYSTEM
-    ${EIGEN_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
     ${object_recognition_core_INCLUDE_DIRS}
 )
