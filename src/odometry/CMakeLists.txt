@@ -17,8 +17,6 @@ find_package(object_recognition_core REQUIRED)
 
 include_directories(SYSTEM ${object_recognition_core_INCLUDE_DIRS})
 
-set_ecto_install_package_name(${PROJECT_NAME}/ecto_cells)
-
 ectomodule(odometry
            module.cpp
            odometry.cpp

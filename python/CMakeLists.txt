@@ -1,5 +1,5 @@
 configure_file(__init__.py.plain.in
-               ${ecto_module_PYTHON_OUTPUT}/ecto_cells/__init__.py
+               ${ecto_module_PYTHON_OUTPUT}/__init__.py
                @ONLY
 )
 
