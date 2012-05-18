@@ -108,15 +108,39 @@ First capture an ORB template of your capture workspace. It should be taken from
 of the image should be filled by the plane. Press 's' to save an image. The result will be placed in the directory
 given, e.g. my_textured_plane. Press 'q' to quit the template capture program.
 
-.. code-block:: sh
+.. toggle_table::
+    :arg1: Non-ROS
+    :arg2: ROS
 
-    rosrun object_recognition_core orb_template.py -o my_textured_plane
+.. toggle:: Non-ROS
+
+    .. code-block:: sh
+
+        ./apps/orb_template.py -o my_textured_plane
+
+.. toggle:: ROS
+
+    .. code-block:: sh
+
+        rosrun object_recognition_core orb_template.py -o my_textured_plane
 
 Try out tracking to see if you got a good template. Press 'q' to quit.
 
-.. code-block:: sh
+.. toggle_table::
+    :arg1: Non-ROS
+    :arg2: ROS
 
-    rosrun object_recognition_core orb_track.py --track_directory my_textured_plane
+.. toggle:: Non-ROS
+
+    .. code-block:: sh
+
+        ./apps/orb_track.py --track_directory my_textured_plane
+
+.. toggle:: ROS
+
+    .. code-block:: sh
+
+        rosrun object_recognition_core orb_track.py --track_directory my_textured_plane
 
 capture
 -------
@@ -152,7 +176,7 @@ If you don't have a pattern and use the dot pattern, ommit the ``-i`` option bel
 
     .. code-block:: sh
 
-        apps/capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag --preview
+        ./apps/capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag --preview
 
 .. toggle:: ROS
 
@@ -179,7 +203,7 @@ Press 'q' to quit early.
 
     .. code-block:: sh
 
-        apps/capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag
+        ./apps/capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag
 
 .. toggle:: ROS
 
@@ -214,7 +238,7 @@ use
 +++
 A typical command line session will look like::
 
-   % apps/upload -a 'Ethan Rublee' -e 'erublee@willowgarage.com' -i silk_highres.bag -n 'silk' -d 'A carton of Silk brand soy milk.' --commit milk, soy, kitchen, tod
+   % apps/upload -a 'Ethan Rublee' -e 'erublee@willowgarage.com' -i silk.bag -n 'silk' -d 'A carton of Silk brand soy milk.' --commit milk, soy, kitchen, tod
    Uploaded session with id: 4ad9f2d3db57bbd414e5e987773490a0
 
 If you leave off the ``--commit`` the script will run without actually committing anything to
