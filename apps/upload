@@ -3,8 +3,10 @@ import roscompat
 import os, sys, argparse
 import ecto, ecto_ros, ecto_ros.ecto_sensor_msgs as ecto_sensor_msgs, ecto_ros.ecto_geometry_msgs as ecto_geometry_msgs
 from ecto_opencv import highgui, imgproc
-from object_recognition_core.db import dbtools, models, ObservationInserter
-from object_recognition_core.db.dbtools import args_to_db_params
+from object_recognition_core.db import tools, models
+from object_recognition_core.db.cells import ObservationInserter
+from object_recognition_core.db.tools import args_to_db_params
+import object_recognition_core.db.tools as dbtools
 
 def connect_observation_calc_with_mask_pose(sync, commit, object_id, session_id, db_params, debug=False):
     plasm = ecto.Plasm()
