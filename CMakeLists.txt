@@ -32,12 +32,23 @@ if(BUILD_TEST)
   add_subdirectory(test)
 endif()
 
-install(DIRECTORY apps/
-        DESTINATION bin
+if (ROS_ELECTRIC_FOUND)
+  set(${PROJECT_NAME}_INSTALL_DIR bin)
+else()
+  set(${PROJECT_NAME}_BIN_INSTALL_DIR ${object_recognition_core_DIR}/bin)
+endif()
+
+# install the applications
+install(PROGRAMS ${PROJECT_SOURCE_DIR}/apps/capture
+                 ${PROJECT_SOURCE_DIR}/apps/orb_template.py
+                 ${PROJECT_SOURCE_DIR}/apps/orb_track.py
+                 ${PROJECT_SOURCE_DIR}/apps/upload
+        DESTINATION ${PROJECT_NAME}_INSTALL_DIR
+)
+
+install(DIRECTORY apps/capture_board apps/bagscripts
+        DESTINATION ${PROJECT_NAME}_INSTALL_DIR
         USE_SOURCE_PERMISSIONS
-        PATTERN "*.bag" EXCLUDE
-        PATTERN "*.pyc" EXCLUDE
-        PATTERN "roscompat*" EXCLUDE
 )
 
 #catkin_sphinx(${CMAKE_CURRENT_SOURCE_DIR}/doc doc)
