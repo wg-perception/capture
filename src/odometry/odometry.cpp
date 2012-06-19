@@ -37,6 +37,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/contrib/contrib.hpp>
+#include <opencv2/rgbd/rgbd.hpp>
 #include <string>
 #include <numeric>
 
@@ -44,29 +45,6 @@ using ecto::tendrils;
 
 using namespace cv;
 using namespace std;
-
-static
-void
-cvtDepth2Cloud(const Mat& depth, Mat& cloud, const Mat& cameraMatrix)
-{
-  const float inv_fx = 1.f / cameraMatrix.at<float>(0, 0);
-  const float inv_fy = 1.f / cameraMatrix.at<float>(1, 1);
-  const float ox = cameraMatrix.at<float>(0, 2);
-  const float oy = cameraMatrix.at<float>(1, 2);
-  cloud.create(depth.size(), CV_32FC3);
-  for (int y = 0; y < cloud.rows; y++)
-  {
-    Point3f* cloud_ptr = (Point3f*) cloud.ptr(y);
-    const float* depth_prt = (const float*) depth.ptr(y);
-    for (int x = 0; x < cloud.cols; x++)
-    {
-      float z = depth_prt[x];
-      cloud_ptr[x].x = (x - ox) * z * inv_fx;
-      cloud_ptr[x].y = (y - oy) * z * inv_fy;
-      cloud_ptr[x].z = z;
-    }
-  }
-}
 
 template<class ImageElemType>
 static void
@@ -78,7 +56,7 @@ warpImage(const cv::Mat& image, const Mat& depth, const Mat& Rt, const Mat& came
   vector<Point2f> points2d;
   Mat cloud, transformedCloud;
 
-  cvtDepth2Cloud(depth, cloud, cameraMatrix);
+  depthTo3d(depth, cameraMatrix, cloud);
   perspectiveTransform(cloud, transformedCloud, Rt);
   projectPoints(transformedCloud.reshape(3, 1), Mat::eye(3, 3, CV_64FC1), Mat::zeros(3, 1, CV_64FC1), cameraMatrix,
                 distCoeff, points2d);
@@ -152,10 +130,12 @@ namespace capture
 
       // Change the depth to meters
       cv::Mat current_depth_meters;
-      current_depth_->convertTo(current_depth_meters, CV_32FC1, 1. / 1000);
+      rescaleDepth(*current_depth_, CV_32FC1, current_depth_meters);
 
       // Odometry is only possible when we have a previous frame
-      if (previous_image_gray_.empty())
+      static int counter = 0;
+      ++counter;
+      if ((previous_image_gray_.empty()) || (counter==30))
       {
         first_image_ = current_image;
         first_depth_meters_ = current_depth_meters;
@@ -189,10 +169,6 @@ namespace capture
       const float maxDepthDiff = 0.07f; //in meters
 
       tm.start();
-      /*bool isFound = cv::RGBDOdometry(Rt, cv::Mat(), previous_image_gray_, previous_depth_meters_, cv::Mat(),
-       current_image_gray, current_depth_meters, cv::Mat(), cameraMatrix, minDepth,
-       maxDepth, maxDepthDiff, iterCounts, minGradMagnitudes, cv::RIGID_BODY_MOTION);*/
-
       bool isFound = cv::RGBDOdometry(Rt, cv::Mat(), previous_image_gray_, previous_depth_meters_, cv::Mat(),
                                       current_image_gray, current_depth_meters, cv::Mat(), cameraMatrix, minDepth,
                                       maxDepth, maxDepthDiff, iterCounts, minGradMagnitudes, cv::RIGID_BODY_MOTION);
@@ -216,7 +192,6 @@ namespace capture
         cv::Mat warpedImage0;
         const Mat distCoeff(1, 5, CV_32FC1, Scalar(0));
 
-        //warpImage<Point3_<uchar> >(previous_image_, previous_depth_meters_, Rt, cameraMatrix, distCoeff, warpedImage0);
         std::cout << previous_pose_ << std::endl;
         warpImage<Point3_<uchar> >(first_image_, first_depth_meters_, previous_pose_, cameraMatrix, distCoeff,
                                    warpedImage0);
