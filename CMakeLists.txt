@@ -24,7 +24,6 @@ catkin_python_setup()
 
 add_subdirectory(python)
 add_subdirectory(cells)
-add_subdirectory(src)
 
 option(BUILD_TEST "Build tests" ON)
 if(BUILD_TEST)

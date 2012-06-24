@@ -37,10 +37,9 @@ import ecto
 
 from ecto_opencv.highgui import imshow
 from ecto_opencv.imgproc import cvtColor, Conversion
+from ecto_opencv.rgbd import Odometry
 from ecto.opts import run_plasm, scheduler_options
 from ecto_image_pipeline.io.source import create_source
-
-from object_recognition_capture.ecto_cells.odometry import Odometry
 
 def parse_args():
     import argparse
