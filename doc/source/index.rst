@@ -1,7 +1,7 @@
-.. contents::
+object_recognition_capture: Data Capture
+========================================
 
-Data Capture
-============
+.. contents::
 
 Capturing data about an object to perform object recognition requires the following:
     * knowing where the camera is with respect to a constant world frame
