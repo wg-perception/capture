@@ -11,8 +11,6 @@ find_package(OpenCV REQUIRED)
 find_package(ecto REQUIRED)
 find_package(object_recognition_core REQUIRED)
 
-set_ecto_install_package_name(${PROJECT_NAME}/ecto_cells)
-
 include_directories(include)
 
 include_directories(SYSTEM
