@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import roscompat
 import ecto
 
 from ecto_opencv.highgui import imshow

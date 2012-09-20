@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import roscompat
 import os, sys, argparse
 import ecto, ecto_ros, ecto_ros.ecto_sensor_msgs as ecto_sensor_msgs, ecto_ros.ecto_geometry_msgs as ecto_geometry_msgs
 from ecto_opencv import highgui, imgproc

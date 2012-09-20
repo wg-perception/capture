@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-import roscompat
-
 from object_recognition_capture import openni_capture
 
 import sys
