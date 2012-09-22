@@ -1,0 +1,26 @@
+<package>
+  <name>object_recognition_capture</name>
+  <version>0.2.11</version>
+  <description>Capture is a set of tools to capture objects in 3D and perform odometry</description>
+  <author email="erublee@willowgarage.com">Ethan Rublee</author>
+  <maintainer email="vrabaud@willowgarage.com">Vincent Rabaud</maintainer>
+  <license>BSD</license>
+  <copyright>Willow Garage</copyright>
+
+  <url>http://ecto.willowgarage.com/recognition</url>
+
+  <build_depend>catkin</build_depend>
+  <build_depend>boost</build_depend>
+  <build_depend>ecto</build_depend>
+  <build_depend>ecto_image_pipeline</build_depend>
+  <build_depend>ecto_opencv</build_depend>
+  <build_depend>ecto_openni</build_depend>
+  <build_depend>object_recognition_core</build_depend>
+
+  <run_depend>boost</run_depend>
+  <run_depend>ecto</run_depend>
+  <run_depend>ecto_image_pipeline</run_depend>
+  <run_depend>ecto_opencv</run_depend>
+  <run_depend>ecto_openni</run_depend>
+  <run_depend>object_recognition_core</run_depend>
+</package>

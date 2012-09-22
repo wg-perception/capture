@@ -1,8 +1,13 @@
 cmake_minimum_required(VERSION 2.8)
 project(object_recognition_capture)
 find_package(catkin QUIET)
+if (${catkin_VERSION} VERSION_GREATER "0.5.26")
+catkin_package()
+catkin_package_export()
+else()
 catkin_stack()
 catkin_project(object_recognition_capture)
+endif()
 
 add_definitions("-Wall -Werror -Wl,--no-undefined ")
 
@@ -42,11 +47,11 @@ install(PROGRAMS ${PROJECT_SOURCE_DIR}/apps/capture
                  ${PROJECT_SOURCE_DIR}/apps/orb_template.py
                  ${PROJECT_SOURCE_DIR}/apps/orb_track.py
                  ${PROJECT_SOURCE_DIR}/apps/upload
-        DESTINATION ${CATKIN_PROJECT_BIN_DESTINATION}
+        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
  
 install(DIRECTORY apps/capture_board apps/bagscripts
-        DESTINATION ${CATKIN_PROJECT_BIN_DESTINATION}
+        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
         USE_SOURCE_PERMISSIONS
 )
 else()
