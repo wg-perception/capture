@@ -22,31 +22,13 @@ The second point is currently done by segmenting out whatever is on top of the p
 
 .. toggle_table::
     :arg1: Non-ROS
-    :arg2: Electric
-    :arg3: Fuerte
+    :arg2: Fuerte/Groovy
 
 .. toggle:: Non-ROS
 
     Start your 3d sensor (Kinect, ASUS ...)
 
-.. toggle:: Electric
-
-    The ROS drivers for openni are used to capture a view sparse bag of data.
-
-    Before you start capturing data, please start up the ROS OpenNI driver:
-
-    .. code-block:: sh
-
-       roslaunch openni_camera openni_node.launch
-
-    It may be preferable to use the SXGA (roughly 1 megapixel) mode of your openni device if possible.
-
-    .. code-block:: sh
-
-       rosrun dynamic_reconfigure dynparam set /openni_node1 image_mode 1
-
-
-.. toggle:: Fuerte
+.. toggle:: Fuerte/Groovy
 
     The ROS drivers for openni are used to capture a view sparse bag of data.
 
