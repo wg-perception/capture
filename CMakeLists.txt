@@ -62,6 +62,9 @@ install(DIRECTORY apps/capture_board apps/bagscripts
         DESTINATION ${${PROJECT_NAME}_BIN_INSTALL_DIR}
         USE_SOURCE_PERMISSIONS
 )
+install(FILES ${PROJECT_SOURCE_DIR}/manifest.xml
+        DESTINATION share/${PROJECT_NAME}
+)
 endif()
 
 #catkin_sphinx(${CMAKE_CURRENT_SOURCE_DIR}/doc doc)
