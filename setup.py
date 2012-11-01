@@ -1,9 +1,11 @@
 #!/usr/bin/env python
-from distutils.core import setup
 
-setup(name='object_recognition_capture',
-      version='1.0.0',
-      description='A simple set of scripts to capture a 3d model of an object',
-      packages=['object_recognition_capture', 'object_recognition_capture.arbotix'],
-      package_dir={'':'python'}
-)
+from distutils.core import setup
+from ecto.package import parse_package_for_distutils
+
+d = parse_package_for_distutils()
+d['packages'] = ['object_recognition_capture', 'object_recognition_capture.arbotix']
+d['package_dir'] = {'': 'python'}
+d['install_requires'] = []
+
+setup(**d)
