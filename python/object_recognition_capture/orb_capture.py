@@ -1,4 +1,5 @@
 import ecto
+from ecto import BlackBoxCellInfo, BlackBoxForward
 from ecto_opencv.highgui import VideoCapture, imshow, FPSDrawer, MatPrinter, MatReader, imread
 from ecto_opencv.features2d import FASTFeature, ORB, Matcher, \
     MatchRefinementHSvd, DrawMatches, KeypointsToMat
@@ -7,83 +8,81 @@ from ecto_opencv.features2d import LSHMatcher
 
 FAST = FASTFeature
 class FeatureFinder(ecto.BlackBox):
-    orb = ORB
-    fast = FAST
-    keypointsTo2d = KeypointsToMat
-    select3d = Select3d
-    image = ecto.Passthrough
+    @classmethod
+    def declare_cells(cls, p):
+        return {'orb': BlackBoxCellInfo(ORB),
+                'fast': BlackBoxCellInfo(FAST),
+                'image': BlackBoxCellInfo(ecto.Passthrough),
+                'keypointsTo2d': BlackBoxCellInfo(KeypointsToMat),
+                'select3d': BlackBoxCellInfo(Select3d)}
 
-    def declare_params(self, p):
+    @classmethod
+    def declare_direct_params(cls, p, **kwargs):
         p.declare('use_fast', 'Use fast or not.', False)
-        p.forward_all('orb')
-        p.forward_all('fast')
 
-    def declare_io(self, p, i, o):
-        if p.use_fast:
-            i.forward('mask', 'fast')
-            i.forward('image', 'image', 'in')
+    @classmethod
+    def declare_forwards(cls, p_in):
+        p = {'orb': 'all', 'fast': 'all'}
+        i = {}
+        if p_in.use_fast:
+            i['fast'] = [BlackBoxForward('mask','','')]
+            i['image'] = [BlackBoxForward('in','image','')]
         else:
-            i.forward_all('orb')
-        self.use_fast = p.use_fast
-        i.forward('points3d', 'select3d')
-        o.forward_all('orb')
-        o.forward_all('keypointsTo2d')
-        o.forward_all('select3d')
+            i['orb'] = 'all'
+        i['select3d'] = [BlackBoxForward('points3d','','')]
+        o = {'orb': 'all', 'keypointsTo2d' : 'all', 'select3d' : 'all'}
+        return (p, i, o)
 
-    def connections(self):
+    def connections(self, p):
         graph = [self.orb['keypoints'] >> self.keypointsTo2d['keypoints'],
                 self.keypointsTo2d['points'] >> self.select3d['points'], ]
-        if self.use_fast:
+        if p.use_fast:
             graph += [self.image[:] >> (self.fast['image'], self.orb['image']),
                       self.fast['keypoints'] >> self.orb['keypoints'],
                       ]
         return graph
 
 class TemplateLoader(ecto.BlackBox):
-    points = MatReader
-    points3d = MatReader
-    descriptors = MatReader
-    R = MatReader
-    T = MatReader
-    image = imread
+    @classmethod
+    def declare_cells(cls, p):
+        return {'points': BlackBoxCellInfo(MatReader, {'filename': '%s/points.yaml' % p.directory}),
+                'points3d': BlackBoxCellInfo(MatReader, {'filename': '%s/points3d.yaml' % p.directory}),
+                'descriptors': BlackBoxCellInfo(MatReader, {'filename': '%s/descriptors.yaml' % p.directory}),
+                'R': BlackBoxCellInfo(MatReader, {'R': '%s/R.yaml' % p.directory}),
+                'T': BlackBoxCellInfo(MatReader, {'filename': '%s/T.yaml' % p.directory}),
+                'image': BlackBoxCellInfo(imread, {'image_file=': '%s/train.png' % p.directory})}
 
-    def declare_params(self, p):
+    @classmethod
+    def declare_direct_params(cls, p):
         p.declare('directory', 'The directory of the template.', '.')
 
-    def declare_io(self, p, i, o):
+    def declare_forwards(cls, _p):
+        o = {}
         for x in ('points', 'points3d', 'descriptors', 'R', 'T'):
-            o.forward(x, x, 'mat')
-        o.forward('image', 'image')
+            o[x] = [BlackBoxForward('mat', x, '')]
+        o['image'] = [BlackBoxForward('image','','')]
 
-    def configure(self, p, i, o):
-        self.points = MatReader(filename='%s/points.yaml' % p.directory)
-        self.points3d = MatReader(filename='%s/points3d.yaml' % p.directory)
-        self.descriptors = MatReader(filename='%s/descriptors.yaml' % p.directory)
-        self.R = MatReader(filename='%s/R.yaml' % p.directory)
-        self.T = MatReader(filename='%s/T.yaml' % p.directory)
-        self.image = imread(image_file='%s/train.png' % p.directory)
+        return ({},{},o)
 
-    def connections(self):
-        return [self.points, self.points3d, self.descriptors, self.R, self.T, self.image
-                ]
+    def connections(self, p):
+        return [self.points, self.points3d, self.descriptors, self.R, self.T, self.image]
 
 class PlaneEstimator(ecto.BlackBox):
     #find a plane in the center region of the image.
-    region = Select3dRegion
-    plane_fitter = PlaneFitter
-    flag = ecto.Passthrough
+    @classmethod
+    def declare_cells(cls, p):
+        return {'flag': BlackBoxCellInfo(ecto.Passthrough),
+                'plane_fitter': BlackBoxCellInfo(PlaneFitter, {}, []),
+                'region': BlackBoxCellInfo(Select3dRegion, {}, 'all')}
 
-    def declare_params(self, p):
-        p.forward_all('region')
+    @classmethod
+    def declare_forwards(self, p):
+        return ({},
+                {'region': 'all', 'flag': [BlackBoxForward('set', 'in', '')]},
+                {'plane_fitter': 'all'})
 
-    def declare_io(self, p, i, o):
-        i.forward_all('region')
-        i.forward('set', 'flag', cell_key='in')
-        o.forward_all('plane_fitter')
-
-    def connections(self):
-        return [ self.region['points3d'] >> self.plane_fitter['points3d'],
-                ]
+    def connections(self, p):
+        return [ self.region['points3d'] >> self.plane_fitter['points3d'] ]
 #
 #class OrbTemplate(ecto.BlackBox):
 #    '''Takes a template image, computes orb, and saves it.'''
@@ -92,43 +91,48 @@ class PlaneEstimator(ecto.BlackBox):
 class OrbPoseEstimator(ecto.BlackBox):
     '''Estimates the pose of an ORB based template.
     '''
-    pose_estimation = MatchRefinementHSvd
-    orb = FeatureFinder
-    lsh = LSHMatcher
-    def declare_params(self, p):
+    @classmethod
+    def declare_cells(cls, p):
+        return {'depth_mask': BlackBoxCellInfo(ecto.Passthrough),
+                'fps': BlackBoxCellInfo(FPSDrawer),
+                'gray_image': BlackBoxCellInfo(ecto.Passthrough),
+                'K': BlackBoxCellInfo(ecto.Passthrough),
+                'lsh': BlackBoxCellInfo(LSHMatcher),
+                'orb': BlackBoxCellInfo(FeatureFinder),
+                'pose_estimation': BlackBoxCellInfo(MatchRefinementHSvd),
+                'points3d': BlackBoxCellInfo(ecto.Passthrough),
+                'rgb_image': BlackBoxCellInfo(ecto.Passthrough),
+                'tr': BlackBoxCellInfo(TransformCompose)}
+
+    @classmethod
+    def declare_direct_params(cls, p):
         p.declare('directory', 'The template directory.', '.')
         p.declare('show_matches', 'Display the matches.', False)
-        p.forward_all('pose_estimation')
-        p.forward_all('orb')
         p.declare('use_lsh', 'Use lsh for matching instead of brute force.', True)
-        p.forward_all('lsh')
-    def declare_io(self, p, i, o):
-        self.gray_image = ecto.Passthrough('gray Input')
-        self.rgb_image = ecto.Passthrough('rgb Input')
-        self.K = ecto.Passthrough('K')
-        self.points3d = ecto.Passthrough('points3d')
-        self.depth_mask = ecto.Passthrough('mask')
-        self.fps = FPSDrawer('FPS')
-        self.tr = TransformCompose('Transform Composition')
 
+    def declare_forwards(self, _p):
         #inputs
-        i.declare('K', self.K.inputs.at('in'))
-        i.declare('image', self.gray_image.inputs.at('in'))
-        i.declare('points3d', self.points3d.inputs.at('in'))
-        i.declare('color_image', self.rgb_image.inputs.at('in'))
-        i.declare('mask', self.depth_mask.inputs.at('in'))
+        p = {'lsh': 'all', 'orb': 'all', 'pose_estimation': 'all'}
+        i = {}
+        for cell_name_new_key in [('K','K'), ('rgb_image','color_image'),
+                                  ('gray_image', 'image'), ('depth_mask', 'mask'),
+                                  ('points3d', 'points3d')]:
+            cell_name, new_key = cell_name_new_key
+            i[cell_name] = [BlackBoxForward('in', new_key, '')]
 
         #outputs
-        o.declare('R', self.tr.outputs.at('R'))
-        o.declare('T', self.tr.outputs.at('T'))
-        o.forward('found', 'pose_estimation')
-        o.declare('debug_image', self.fps.outputs.at('image'))
+        o = {'tr': [BlackBoxForward('R', '', ''), BlackBoxForward('T', '', '')],
+             'pose_estimation': [BlackBoxForward('found','','')],
+             'fps': [BlackBoxForward('image', 'debug_image', '')]}
+
+        return (p, i, o)
 
     def configure(self, p, i, o):
         self.train = TemplateLoader(directory=p.directory)
         self.show_matches = p.show_matches
         self.use_lsh = p.use_lsh
-    def connections(self):
+
+    def connections(self, _p):
         train = self.train
         orb = self.orb
         graph = [ self.gray_image[:] >> orb['image'],
