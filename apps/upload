@@ -119,7 +119,7 @@ def parse_args():
     dbtools.add_db_arguments(parser)
     from ecto.opts import scheduler_options
     group = parser.add_argument_group('Scheduler Options')
-    scheduler_options(group, default_scheduler='Singlethreaded')
+    scheduler_options(group)
 
     args = parser.parse_args()
     if not args.bag:

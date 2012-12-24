@@ -40,7 +40,7 @@ object sparsely, depending on the angle_thresh setting.'''),
 
     #add ecto scheduler args.
     group = parser.add_argument_group('Scheduler Options')
-    scheduler_options(group, default_scheduler='Singlethreaded')
+    scheduler_options(group)
     args = parser.parse_args()
     if not args.preview and len(args.bag) < 1:
         parser.print_help()
