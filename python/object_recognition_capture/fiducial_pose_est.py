@@ -1,30 +1,24 @@
 import ecto
 from ecto_opencv import highgui, calib, imgproc
+from ecto import BlackBoxForward as Forward
 
 class OpposingDotPoseEstimator(ecto.BlackBox):
     '''Estimates the pose of a fiducial that has a black on white pattern and a white on black pattern.
     TODO support other configurations...
     '''
-    def declare_params(self, p):
-        p.declare('rows', 'Number of rows in the pattern.', 11)
-        p.declare('cols', 'Number of cols in the pattern.', 7)
-        p.declare('pattern_type', 'Type of pattern', calib.ASYMMETRIC_CIRCLES_GRID)
-        p.declare('square_size', 'The pattern spacing', 0.1)
-        p.declare('debug', 'Debug the detector.', True)
-
-    def declare_io(self, p, i, o):
-        self.gray_image = ecto.Passthrough('gray Input')
-        self.rgb_image = ecto.Passthrough('rgb Input')
-        self.camera_info = ecto.Passthrough('K')
-        self.gather = calib.GatherPoints("gather", N=2)
+    def declare_cells(self, p):
         #TODO parameterize the quantizer
         #abuse saturated Arithmetics http://opencv.itseez.com/modules/core/doc/intro.html?highlight=saturated.
-        self.quantizer = imgproc.Quantize('Quantizer', alpha=1, beta=0)
-        self.invert = imgproc.BitwiseNot()
-        self.debug = p.debug
+        cells = {'gray_image': ecto.Passthrough('gray Input'),
+                'rgb_image': ecto.Passthrough('rgb Input'),
+                'camera_info': ecto.Passthrough('K'),
+                'gather': calib.GatherPoints("gather", N=2),
+                'quantizer': imgproc.Quantize('Quantizer', alpha=1, beta=0),
+                'invert': imgproc.BitwiseNot()}
+
         offset_x = -.3095 #TODO: FIXME hard coded
         offset_y = -.1005
-        self.cd_bw = calib.PatternDetector('Dot Detector, B/W',
+        cells['cd_bw'] = calib.PatternDetector('Dot Detector, B/W',
                                                 rows=p.rows, cols=p.cols,
                                                 pattern_type=p.pattern_type,
                                                 square_size=p.square_size,
@@ -32,33 +26,44 @@ class OpposingDotPoseEstimator(ecto.BlackBox):
                                                 offset_y=offset_y,
                                                 )
         offset_x = .1505 #TODO: FIXME hard coded
-        self.cd_wb = calib.PatternDetector('Dot Detector, W/B',
+        cells['cd_wb'] = calib.PatternDetector('Dot Detector, W/B',
                                                 rows=p.rows, cols=p.cols,
                                                 pattern_type=p.pattern_type,
                                                 square_size=p.square_size,
                                                 offset_x=offset_x,
                                                 offset_y=offset_y,
                                                 )
-        self.pose_calc = calib.FiducialPoseFinder('Pose Calc')
-        self.circle_drawer = calib.PatternDrawer('Circle Draw',
+        cells['pose_calc'] = calib.FiducialPoseFinder('Pose Calc')
+        cells['circle_drawer'] = calib.PatternDrawer('Circle Draw',
                                                  rows=p.rows, cols=p.cols)
-        self.circle_drawer2 = calib.PatternDrawer('Circle Draw',
+        cells['circle_drawer2'] = calib.PatternDrawer('Circle Draw',
                                                  rows=p.rows, cols=p.cols)
-        self.pose_draw = calib.PoseDrawer('Pose Draw')
-        self.fps = highgui.FPSDrawer()
+        cells['pose_draw'] = calib.PoseDrawer('Pose Draw')
+        cells['fps'] = highgui.FPSDrawer()
 
+        return cells
+ 
+    def declare_direct_params(self, p):
+        p.declare('rows', 'Number of rows in the pattern.', 11)
+        p.declare('cols', 'Number of cols in the pattern.', 7)
+        p.declare('pattern_type', 'Type of pattern', calib.ASYMMETRIC_CIRCLES_GRID)
+        p.declare('square_size', 'The pattern spacing', 0.1)
+        p.declare('debug', 'Debug the detector.', True)
+
+    def declare_forwards(self, _p):
         #inputs
-        i.declare('image', self.gray_image.inputs.at('in'))
-        i.declare('color_image', self.rgb_image.inputs.at('in'))
-        i.declare('K', self.camera_info.inputs.at('in'))
+        i = {'gray_image': [Forward('in','image')],
+             'rgb_image': [Forward('in','color_image')],
+             'camera_info': [Forward('in','K')]}
 
         #outputs
-        o.declare('R', self.pose_calc.outputs.at('R'))
-        o.declare('T', self.pose_calc.outputs.at('T'))
-        o.declare('found', self.gather.outputs.at('found'))
-        o.declare('debug_image', self.fps.outputs.at('image'))
+        o = {'pose_calc': [Forward('R'), Forward('T')],
+             'gather': [Forward('found')],
+             'fps': [Forward('image', 'debug_image')]}
 
-    def connections(self):
+        return ({},i,o)
+
+    def connections(self, p):
         graph = [
                 self.gray_image[:] >> self.quantizer[:],
                 self.quantizer[:] >> (self.invert[:], self.cd_bw['input']),
@@ -68,7 +73,7 @@ class OpposingDotPoseEstimator(ecto.BlackBox):
                 self.gather['out', 'ideal', 'found'] >> self.pose_calc['points', 'ideal', 'found'],
                 self.camera_info[:] >> self.pose_calc['K'],
                 ]
-        if self.debug:
+        if p.debug:
             graph += [self.rgb_image[:] >> self.circle_drawer['input'],
                       self.circle_drawer2[:] >> self.pose_draw['image'],
                       self.pose_calc['R', 'T'] >> self.pose_draw['R', 'T'],

@@ -1,23 +1,22 @@
 import ecto
 from ecto import BlackBoxCellInfo, BlackBoxForward
-from ecto_opencv.highgui import VideoCapture, imshow, FPSDrawer, MatPrinter, MatReader, imread
+from ecto_opencv.highgui import imshow, FPSDrawer, MatReader, imread
 from ecto_opencv.features2d import FASTFeature, ORB, Matcher, \
     MatchRefinementHSvd, DrawMatches, KeypointsToMat
-from ecto_opencv.calib import Select3d, Select3dRegion, PlaneFitter, PoseDrawer, DepthValidDraw, TransformCompose
+from ecto_opencv.calib import Select3d, Select3dRegion, PlaneFitter, PoseDrawer, TransformCompose
 from ecto_opencv.features2d import LSHMatcher
 
-FAST = FASTFeature
 class FeatureFinder(ecto.BlackBox):
     @classmethod
-    def declare_cells(cls, p):
+    def declare_cells(cls, _p):
         return {'orb': BlackBoxCellInfo(ORB),
-                'fast': BlackBoxCellInfo(FAST),
+                'fast': BlackBoxCellInfo(FASTFeature),
                 'image': BlackBoxCellInfo(ecto.Passthrough),
                 'keypointsTo2d': BlackBoxCellInfo(KeypointsToMat),
                 'select3d': BlackBoxCellInfo(Select3d)}
 
     @classmethod
-    def declare_direct_params(cls, p, **kwargs):
+    def declare_direct_params(cls, p, **_kwargs):
         p.declare('use_fast', 'Use fast or not.', False)
 
     @classmethod
@@ -25,11 +24,11 @@ class FeatureFinder(ecto.BlackBox):
         p = {'orb': 'all', 'fast': 'all'}
         i = {}
         if p_in.use_fast:
-            i['fast'] = [BlackBoxForward('mask','','')]
-            i['image'] = [BlackBoxForward('in','image','')]
+            i['fast'] = [BlackBoxForward('mask')]
+            i['image'] = [BlackBoxForward('in','image')]
         else:
             i['orb'] = 'all'
-        i['select3d'] = [BlackBoxForward('points3d','','')]
+        i['select3d'] = [BlackBoxForward('points3d')]
         o = {'orb': 'all', 'keypointsTo2d' : 'all', 'select3d' : 'all'}
         return (p, i, o)
 
@@ -56,32 +55,33 @@ class TemplateLoader(ecto.BlackBox):
     def declare_direct_params(cls, p):
         p.declare('directory', 'The directory of the template.', '.')
 
-    def declare_forwards(cls, _p):
+    @staticmethod
+    def declare_forwards(_p):
         o = {}
         for x in ('points', 'points3d', 'descriptors', 'R', 'T'):
-            o[x] = [BlackBoxForward('mat', x, '')]
-        o['image'] = [BlackBoxForward('image','','')]
+            o[x] = [BlackBoxForward('mat', x)]
+        o['image'] = [BlackBoxForward('image')]
 
         return ({},{},o)
 
-    def connections(self, p):
+    def connections(self, _p):
         return [self.points, self.points3d, self.descriptors, self.R, self.T, self.image]
 
 class PlaneEstimator(ecto.BlackBox):
     #find a plane in the center region of the image.
     @classmethod
-    def declare_cells(cls, p):
+    def declare_cells(cls, _p):
         return {'flag': BlackBoxCellInfo(ecto.Passthrough),
-                'plane_fitter': BlackBoxCellInfo(PlaneFitter, {}, []),
-                'region': BlackBoxCellInfo(Select3dRegion, {}, 'all')}
+                'plane_fitter': BlackBoxCellInfo(PlaneFitter),
+                'region': BlackBoxCellInfo(Select3dRegion)}
 
     @classmethod
-    def declare_forwards(self, p):
-        return ({},
-                {'region': 'all', 'flag': [BlackBoxForward('set', 'in', '')]},
+    def declare_forwards(self, _p):
+        return ({'region': 'all'},
+                {'region': 'all', 'flag': [BlackBoxForward('in','set')]},
                 {'plane_fitter': 'all'})
 
-    def connections(self, p):
+    def connections(self, _p):
         return [ self.region['points3d'] >> self.plane_fitter['points3d'] ]
 #
 #class OrbTemplate(ecto.BlackBox):
@@ -92,7 +92,7 @@ class OrbPoseEstimator(ecto.BlackBox):
     '''Estimates the pose of an ORB based template.
     '''
     @classmethod
-    def declare_cells(cls, p):
+    def declare_cells(cls, _p):
         return {'depth_mask': BlackBoxCellInfo(ecto.Passthrough),
                 'fps': BlackBoxCellInfo(FPSDrawer),
                 'gray_image': BlackBoxCellInfo(ecto.Passthrough),
@@ -118,16 +118,16 @@ class OrbPoseEstimator(ecto.BlackBox):
                                   ('gray_image', 'image'), ('depth_mask', 'mask'),
                                   ('points3d', 'points3d')]:
             cell_name, new_key = cell_name_new_key
-            i[cell_name] = [BlackBoxForward('in', new_key, '')]
+            i[cell_name] = [BlackBoxForward('in', new_key)]
 
         #outputs
-        o = {'tr': [BlackBoxForward('R', '', ''), BlackBoxForward('T', '', '')],
-             'pose_estimation': [BlackBoxForward('found','','')],
-             'fps': [BlackBoxForward('image', 'debug_image', '')]}
+        o = {'tr': [BlackBoxForward('R'), BlackBoxForward('T')],
+             'pose_estimation': [BlackBoxForward('found')],
+             'fps': [BlackBoxForward('image', 'debug_image')]}
 
         return (p, i, o)
 
-    def configure(self, p, i, o):
+    def configure(self, p, _i, _o):
         self.train = TemplateLoader(directory=p.directory)
         self.show_matches = p.show_matches
         self.use_lsh = p.use_lsh
