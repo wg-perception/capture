@@ -1,7 +1,3 @@
-find_package(object_recognition_core REQUIRED)
-
-include_directories(SYSTEM ${object_recognition_core_INCLUDE_DIRS})
-
 #deal with the capture cells
 ectomodule(capture DESTINATION ${PROJECT_NAME}/ecto_cells
                    INSTALL
