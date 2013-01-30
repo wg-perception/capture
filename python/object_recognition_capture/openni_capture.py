@@ -1,4 +1,4 @@
-from .orb_capture import OrbPoseEstimator
+from orb_capture import OrbPoseEstimator
 from ecto_opencv import highgui, calib, imgproc
 from ecto_ros import Cv2CameraInfo, Mat2Image, RT2PoseStamped
 from fiducial_pose_est import OpposingDotPoseEstimator
@@ -11,6 +11,7 @@ from ecto_ros.ecto_sensor_msgs import Bagger_Image as ImageBagger, Bagger_Camera
 from ecto_ros.ecto_geometry_msgs import Bagger_PoseStamped as PoseBagger
 import math
 import time
+from ecto_openni import SXGA_RES, VGA_RES, FPS_30, FPS_15
 
 class TurnTable(ecto.Cell):
     '''Uses the arbotix library to talk to servoes.'''
@@ -68,7 +69,7 @@ class TurnTable(ecto.Cell):
         a.disableTorque(MY_SERVO)
 
 def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72,
-                                            orb_template='',
+                                            orb_template='', res=SXGA_RES, fps=FPS_30,
                                             orb_matches=False,
                                             preview=False, use_turn_table=True):
     '''
@@ -79,8 +80,8 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
     '''
     graph = []
 
-    from ecto_openni import SXGA_RES, FPS_15
-    source = create_source('image_pipeline','OpenNISource',image_mode=SXGA_RES,image_fps=FPS_15)
+    # try several parameter combinations
+    source = create_source('image_pipeline','OpenNISource',image_mode=res,image_fps=fps)
 
     poser = OpposingDotPoseEstimator(rows=5, cols=3,
                                      pattern_type=calib.ASYMMETRIC_CIRCLES_GRID,

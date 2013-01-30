@@ -5,7 +5,7 @@ import sys
 import argparse
 import math
 import textwrap
-
+from ecto_openni import SXGA_RES, VGA_RES, FPS_30, FPS_15
 
 def parse_args():
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -32,6 +32,12 @@ object sparsely, depending on the angle_thresh setting.'''),
     parser.add_argument('-m,--matches', dest='matches', action='store_const',
                         const=True, default=False,
                         help='Visualize the matches.')
+    parser.add_argument('-f', '--fps', metavar='FPS', dest='fps', type=int,
+                       default=30, choices=[15, 30],
+                       help='The temporal resolution of the captured data')
+    parser.add_argument('-r', '--res', metavar='RES', dest='res', type=str,
+                       default='sxga', choices=['vga', 'sxga'],
+                       help='The image resolution of the captured data.')
     #parser.add_argument('--use_turn_table', dest='use_turn_table', action='store_true',
     #                    default=False, help='Use an E106 servo based turntable.')
     from ecto.opts import scheduler_options, cell_options
@@ -55,7 +61,9 @@ if "__main__" == __name__:
     options = parse_args()
     #ecto_ros.init(argv, "object_capture", False)
     segmentation = options.segmentation_factory(options)
-    plasm = None
+
+    res = {'vga': VGA_RES, 'sxga': SXGA_RES}[options.res]
+    fps = {15: FPS_15, 30: FPS_30}[options.fps]
     (plasm, segmentation) = openni_capture.create_capture_plasm(bag_name=options.bag,
                                             angle_thresh=options.angle_thresh,
                                             segmentation_cell=segmentation,
@@ -63,6 +71,9 @@ if "__main__" == __name__:
                                             preview=options.preview,
                                             orb_template=options.input,
                                             orb_matches=options.matches,
-                                            use_turn_table=False)
+                                            use_turn_table=False,
+                                            res=res,
+                                            fps=fps
+                                            )
     from ecto.opts import run_plasm
     run_plasm(options, plasm, locals=dict(plasm=plasm, segmentation=segmentation))
