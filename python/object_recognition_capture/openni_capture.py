@@ -4,6 +4,7 @@ from ecto_ros import Cv2CameraInfo, Mat2Image, RT2PoseStamped
 from fiducial_pose_est import OpposingDotPoseEstimator
 from ecto_image_pipeline.base import CameraModelToCv
 from ecto_image_pipeline.io.source import create_source
+from ecto_opencv.calib import DepthTo3d
 import object_recognition_capture
 import ecto
 import ecto_ros
@@ -86,10 +87,14 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
     poser = OpposingDotPoseEstimator(rows=5, cols=3,
                                      pattern_type=calib.ASYMMETRIC_CIRCLES_GRID,
                                      square_size=0.04, debug=True)
+    depth_to_3d = DepthTo3d()
+
     if orb_template != '':
         poser = OrbPoseEstimator(directory=orb_template, show_matches=orb_matches)
-        graph += [source['points3d'] >> poser['points3d'],
-                  source['mask'] >> poser['mask'],
+        graph += [source['depth_raw'] >> depth_to_3d['depth'],
+                  source['K'] >> depth_to_3d['K'],
+                  depth_to_3d['points3d'] >> poser['points3d'],
+                  source['mask_depth'] >> poser['mask'],
                   ]
     rgb2gray = imgproc.cvtColor('rgb -> gray', flag=imgproc.Conversion.RGB2GRAY)
     delta_pose = ecto.If('delta R|T', cell=object_recognition_capture.DeltaRT(angle_thresh=angle_thresh,

@@ -47,7 +47,7 @@ class TemplateLoader(ecto.BlackBox):
         return {'points': BlackBoxCellInfo(MatReader, {'filename': '%s/points.yaml' % p.directory}),
                 'points3d': BlackBoxCellInfo(MatReader, {'filename': '%s/points3d.yaml' % p.directory}),
                 'descriptors': BlackBoxCellInfo(MatReader, {'filename': '%s/descriptors.yaml' % p.directory}),
-                'R': BlackBoxCellInfo(MatReader, {'R': '%s/R.yaml' % p.directory}),
+                'R': BlackBoxCellInfo(MatReader, {'filename': '%s/R.yaml' % p.directory}),
                 'T': BlackBoxCellInfo(MatReader, {'filename': '%s/T.yaml' % p.directory}),
                 'image': BlackBoxCellInfo(imread, {'image_file=': '%s/train.png' % p.directory})}
 
