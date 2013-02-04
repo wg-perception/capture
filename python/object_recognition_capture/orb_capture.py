@@ -1,10 +1,12 @@
-import ecto
+"""
+Module defining a few BlackBoxes for textured plane tracking
+"""
 from ecto import BlackBoxCellInfo, BlackBoxForward
+from ecto_opencv.calib import Select3d, Select3dRegion, PoseDrawer, TransformCompose
+from ecto_opencv.features2d import FASTFeature, ORB, Matcher, MatchRefinementHSvd, DrawMatches, KeypointsToMat, \
+    LSHMatcher
 from ecto_opencv.highgui import imshow, FPSDrawer, MatReader, imread
-from ecto_opencv.features2d import FASTFeature, ORB, Matcher, \
-    MatchRefinementHSvd, DrawMatches, KeypointsToMat
-from ecto_opencv.calib import Select3d, Select3dRegion, PlaneFitter, PoseDrawer, TransformCompose
-from ecto_opencv.features2d import LSHMatcher
+import ecto
 
 class FeatureFinder(ecto.BlackBox):
     @classmethod
@@ -66,27 +68,6 @@ class TemplateLoader(ecto.BlackBox):
 
     def connections(self, _p):
         return [self.points, self.points3d, self.descriptors, self.R, self.T, self.image]
-
-class PlaneEstimator(ecto.BlackBox):
-    #find a plane in the center region of the image.
-    @classmethod
-    def declare_cells(cls, _p):
-        return {'flag': BlackBoxCellInfo(ecto.Passthrough),
-                'plane_fitter': BlackBoxCellInfo(PlaneFitter),
-                'region': BlackBoxCellInfo(Select3dRegion)}
-
-    @classmethod
-    def declare_forwards(self, _p):
-        return ({'region': 'all'},
-                {'region': 'all', 'flag': [BlackBoxForward('in','set')]},
-                {'plane_fitter': 'all'})
-
-    def connections(self, _p):
-        return [ self.region['points3d'] >> self.plane_fitter['points3d'] ]
-#
-#class OrbTemplate(ecto.BlackBox):
-#    '''Takes a template image, computes orb, and saves it.'''
-#    
 
 class OrbPoseEstimator(ecto.BlackBox):
     '''Estimates the pose of an ORB based template.

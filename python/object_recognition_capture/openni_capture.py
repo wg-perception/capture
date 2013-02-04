@@ -1,18 +1,22 @@
-from orb_capture import OrbPoseEstimator
-from ecto_opencv import highgui, calib, imgproc
-from ecto_ros import Cv2CameraInfo, Mat2Image, RT2PoseStamped
-from fiducial_pose_est import OpposingDotPoseEstimator
+"""
+Module defining common tools for obejct capture
+"""
 from ecto_image_pipeline.base import CameraModelToCv
 from ecto_image_pipeline.io.source import create_source
+from ecto_opencv import highgui, calib, imgproc, rgbd
 from ecto_opencv.calib import DepthTo3d
-import object_recognition_capture
+from ecto_opencv.rgbd import ComputeNormals, PlaneFinder
+from ecto_openni import SXGA_RES, VGA_RES, FPS_30, FPS_15
+from ecto_ros import Cv2CameraInfo, Mat2Image, RT2PoseStamped
+from ecto_ros.ecto_geometry_msgs import Bagger_PoseStamped as PoseBagger
+from ecto_ros.ecto_sensor_msgs import Bagger_Image as ImageBagger, Bagger_CameraInfo as CameraInfoBagger
+from fiducial_pose_est import OpposingDotPoseEstimator
+from orb_capture import OrbPoseEstimator
 import ecto
 import ecto_ros
-from ecto_ros.ecto_sensor_msgs import Bagger_Image as ImageBagger, Bagger_CameraInfo as CameraInfoBagger
-from ecto_ros.ecto_geometry_msgs import Bagger_PoseStamped as PoseBagger
 import math
+import object_recognition_capture
 import time
-from ecto_openni import SXGA_RES, VGA_RES, FPS_30, FPS_15
 
 class TurnTable(ecto.Cell):
     '''Uses the arbotix library to talk to servoes.'''
@@ -82,49 +86,69 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
     graph = []
 
     # try several parameter combinations
-    source = create_source('image_pipeline','OpenNISource',image_mode=res,image_fps=fps)
+    source = create_source('image_pipeline','OpenNISource',outputs_list=['K', 'camera', 'image', 'depth', 'points3d', 'mask_depth'],res=res,fps=fps)
 
-    poser = OpposingDotPoseEstimator(rows=5, cols=3,
+    # convert the iamge to grayscale
+    rgb2gray = imgproc.cvtColor('rgb -> gray', flag=imgproc.Conversion.RGB2GRAY)
+    graph += [source['image'] >> rgb2gray[:] ]
+
+    display = highgui.imshow(name='Poses')
+    if orb_template:
+        # find the pose using ORB
+        poser = OrbPoseEstimator(directory=orb_template, show_matches=orb_matches)
+        graph += [ source['image', 'K', 'mask_depth', 'points3d'] >> poser['color_image', 'K', 'mask', 'points3d'],
+                   rgb2gray[:] >> poser['image'],
+                   poser['debug_image'] >> display['image'],
+                 ]
+    else:
+        # get a pose use the dot pattern: there might be a scale ambiguity as this is 3d only
+        poser_tmp = OpposingDotPoseEstimator(rows=5, cols=3,
                                      pattern_type=calib.ASYMMETRIC_CIRCLES_GRID,
                                      square_size=0.04, debug=True)
-    depth_to_3d = DepthTo3d()
+        graph += [ source['image', 'K'] >> poser_tmp['color_image', 'K'],
+                   rgb2gray[:] >> poser_tmp['image'] ]
 
-    if orb_template != '':
-        poser = OrbPoseEstimator(directory=orb_template, show_matches=orb_matches)
-        graph += [source['depth_raw'] >> depth_to_3d['depth'],
-                  source['K'] >> depth_to_3d['K'],
-                  depth_to_3d['points3d'] >> poser['points3d'],
-                  source['mask_depth'] >> poser['mask'],
-                  ]
-    rgb2gray = imgproc.cvtColor('rgb -> gray', flag=imgproc.Conversion.RGB2GRAY)
+        # filter the previous pose and resolve the scale ambiguity using 3d
+        poser = object_recognition_capture.ecto_cells.capture.PlaneFilter();
+        plane_est = PlaneFinder(min_size=10000)
+        compute_normals = ComputeNormals()
+        graph += [ # find the normals
+                   source['K', 'points3d'] >> compute_normals['K', 'points3d'],
+                   # find the planes
+                   compute_normals['normals'] >> plane_est['normals'],
+                   source['K', 'points3d'] >> plane_est['K', 'points3d'] ]
+
+        # make sure the pose is centered at the origin of the plane
+        graph += [ source['K'] >> poser['K'],
+                   poser_tmp['R', 'T'] >> poser['R', 'T'],
+                   plane_est['planes', 'masks'] >> poser['planes', 'masks'] ]
+
+        # draw the found pose
+        pose_drawer = calib.PoseDrawer('Pose Draw')
+        graph += [ poser['found'] >> pose_drawer['trigger'],
+                   source['K', 'image'] >> pose_drawer['K', 'image'],
+                   poser['R', 'T'] >> pose_drawer['R', 'T'],
+                   pose_drawer['output'] >> display[:] ]
+
     delta_pose = ecto.If('delta R|T', cell=object_recognition_capture.DeltaRT(angle_thresh=angle_thresh,
                                                           n_desired=n_desired))
 
-    display = highgui.imshow(name='Poses')
     poseMsg = RT2PoseStamped(frame_id='/camera_rgb_optical_frame')
 
-    graph += [source['image'] >> rgb2gray[:],
-              source['image'] >> poser['color_image'],
-              rgb2gray[:] >> poser['image'],
-              source['K'] >> poser['K'],
-              poser['debug_image'] >> (display['image'],),
-              poser['R', 'T', 'found'] >> delta_pose['R', 'T', 'found'],
-              poser['R', 'T'] >> poseMsg['R', 'T'],
-              ]
+    graph += [ poser['R', 'T', 'found'] >> delta_pose['R', 'T', 'found'],
+               poser['R', 'T'] >> poseMsg['R', 'T'] ]
 
-    masker = segmentation_cell
-    maskMsg = Mat2Image(frame_id='/camera_rgb_optical_frame')
+    # publish the source data
     rgbMsg = Mat2Image(frame_id='/camera_rgb_optical_frame', swap_rgb=True)
     depthMsg = Mat2Image(frame_id='/camera_rgb_optical_frame')
-    
-    
+    graph += [ source['depth'] >> depthMsg[:],
+               source['image'] >> rgbMsg[:] ]
+
+    # mask out the object
+    masker = segmentation_cell
+    maskMsg = Mat2Image(frame_id='/camera_rgb_optical_frame')
     graph += [
-              source['depth'] >> depthMsg[:],
-              source['image'] >> rgbMsg[:],
-              ]
-    graph += [
-              source['depth'] >> masker['depth'],
-              source['K'] >> masker['K'],
+              source['depth', 'K'] >> masker['depth', 'K'],
               poser['R', 'T'] >> masker['R', 'T'],
               masker['mask'] >> maskMsg[:],
               ]
