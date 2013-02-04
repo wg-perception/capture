@@ -3,9 +3,9 @@ import ecto
 
 from ecto_opencv.highgui import imshow
 from ecto_opencv.imgproc import cvtColor, Conversion
-from ecto_opencv.calib import DepthTo3d
 from ecto.opts import scheduler_options, run_plasm, cell_options
 from ecto_image_pipeline.io.source import create_source
+from ecto_image_pipeline.io.source import add_camera_group
 
 from object_recognition_capture.orb_capture import OrbPoseEstimator
 
@@ -16,6 +16,8 @@ if __name__ == '__main__':
 
         scheduler_options(parser.add_argument_group('Scheduler'))
         factory = cell_options(parser, OrbPoseEstimator, 'track')
+        add_camera_group(parser)
+
         options = parser.parse_args()
         options.orb_factory = factory
         return options
@@ -24,10 +26,8 @@ if __name__ == '__main__':
     plasm = ecto.Plasm()
 
     #setup the input source, grayscale conversion
-    from ecto_openni import SXGA_RES, FPS_15
-    source = create_source('image_pipeline','OpenNISource',image_mode=SXGA_RES,image_fps=FPS_15)
+    source = create_source('image_pipeline','OpenNISource',outputs_list=['K', 'image', 'depth', 'points3d', 'mask_depth'],res=options.res,fps=options.fps)
     rgb2gray = cvtColor('Grayscale', flag=Conversion.RGB2GRAY)
-    depth_to_3d = DepthTo3d()
     plasm.connect(source['image'] >> rgb2gray ['image'])
 
     pose_est = options.orb_factory(options, 'ORB Tracker')
@@ -37,12 +37,7 @@ if __name__ == '__main__':
 
     #connect up the pose_est
     plasm.connect(img_src >> pose_est['image'],
-                  source['image'] >> pose_est['color_image'],
-                  source['depth_raw'] >> depth_to_3d['depth'],
-                  source['K'] >> depth_to_3d['K'],
-                  depth_to_3d['points3d'] >> pose_est['points3d'],
-                  source['mask_depth'] >> pose_est['mask'],
-                  source['K'] >> pose_est['K']
+                  source['image','mask_depth','K','points3d'] >> pose_est['color_image','mask','K','points3d'],
                   )
 
     display = imshow('orb display', name='Pose')
