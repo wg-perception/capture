@@ -1,12 +1,12 @@
 """
-Module defining common tools for obejct capture
+Module defining common tools for object capture
 """
 from ecto_image_pipeline.base import CameraModelToCv
 from ecto_image_pipeline.io.source import create_source
-from ecto_opencv import highgui, calib, imgproc, rgbd
+from ecto_opencv import highgui, calib, imgproc
 from ecto_opencv.calib import DepthTo3d
 from ecto_opencv.rgbd import ComputeNormals, PlaneFinder
-from ecto_openni import SXGA_RES, VGA_RES, FPS_30, FPS_15
+from ecto_openni import SXGA_RES, FPS_30
 from ecto_ros import Cv2CameraInfo, Mat2Image, RT2PoseStamped
 from ecto_ros.ecto_geometry_msgs import Bagger_PoseStamped as PoseBagger
 from ecto_ros.ecto_sensor_msgs import Bagger_Image as ImageBagger, Bagger_CameraInfo as CameraInfoBagger
@@ -86,11 +86,21 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
     graph = []
 
     # try several parameter combinations
-    source = create_source('image_pipeline','OpenNISource',outputs_list=['K', 'camera', 'image', 'depth', 'points3d', 'mask_depth'],res=res,fps=fps)
+    source = create_source('image_pipeline', 'OpenNISource', outputs_list=['K', 'camera', 'image', 'depth', 'points3d',
+                                                                           'mask_depth'], res=res, fps=fps)
 
-    # convert the iamge to grayscale
+    # convert the image to grayscale
     rgb2gray = imgproc.cvtColor('rgb -> gray', flag=imgproc.Conversion.RGB2GRAY)
     graph += [source['image'] >> rgb2gray[:] ]
+
+    # Find planes
+    plane_est = PlaneFinder(min_size=10000)
+    compute_normals = ComputeNormals()
+    graph += [ # find the normals
+                source['K', 'points3d'] >> compute_normals['K', 'points3d'],
+                # find the planes
+                compute_normals['normals'] >> plane_est['normals'],
+                source['K', 'points3d'] >> plane_est['K', 'points3d'] ]
 
     display = highgui.imshow(name='Poses')
     if orb_template:
@@ -110,13 +120,6 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
 
         # filter the previous pose and resolve the scale ambiguity using 3d
         poser = object_recognition_capture.ecto_cells.capture.PlaneFilter();
-        plane_est = PlaneFinder(min_size=10000)
-        compute_normals = ComputeNormals()
-        graph += [ # find the normals
-                   source['K', 'points3d'] >> compute_normals['K', 'points3d'],
-                   # find the planes
-                   compute_normals['normals'] >> plane_est['normals'],
-                   source['K', 'points3d'] >> plane_est['K', 'points3d'] ]
 
         # make sure the pose is centered at the origin of the plane
         graph += [ source['K'] >> poser['K'],
@@ -146,14 +149,14 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
 
     # mask out the object
     masker = segmentation_cell
+    graph += [ source['points3d', 'K'] >> masker['points3d', 'K'],
+               plane_est['masks', 'planes'] >> masker['masks', 'planes'],
+               poser['T'] >> masker['T'] ]
+
+    # publish the mask
     maskMsg = Mat2Image(frame_id='/camera_rgb_optical_frame')
-    graph += [
-              source['depth', 'K'] >> masker['depth', 'K'],
-              poser['R', 'T'] >> masker['R', 'T'],
-              masker['mask'] >> maskMsg[:],
-              ]
-#    graph += [source['depth'] >> highgui.imshow(name='depth')['image']
-#              ]
+    graph += [ masker['mask'] >> maskMsg[:] ]
+
     camera2cv = CameraModelToCv()
     cameraMsg = Cv2CameraInfo(frame_id='/camera_rgb_optical_frame')
     graph += [source['camera'] >> camera2cv['camera'],

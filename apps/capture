@@ -40,8 +40,8 @@ object sparsely, depending on the angle_thresh setting.'''),
     #parser.add_argument('--use_turn_table', dest='use_turn_table', action='store_true',
     #                    default=False, help='Use an E106 servo based turntable.')
     from ecto.opts import scheduler_options, cell_options
-    from ecto_opencv.calib import PlanarSegmentation
-    segmentation_factory = cell_options(parser, PlanarSegmentation, 'seg')
+    from ecto_opencv.rgbd import OnPlaneClustererCylinder
+    segmentation_factory = cell_options(parser, OnPlaneClustererCylinder, 'seg')
 
     #add ecto scheduler args.
     group = parser.add_argument_group('Scheduler Options')
