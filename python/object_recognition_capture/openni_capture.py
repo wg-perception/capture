@@ -149,7 +149,7 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
 
     # mask out the object
     masker = segmentation_cell
-    graph += [ source['points3d', 'K'] >> masker['points3d', 'K'],
+    graph += [ source['points3d'] >> masker['points3d'],
                plane_est['masks', 'planes'] >> masker['masks', 'planes'],
                poser['T'] >> masker['T'] ]
 
