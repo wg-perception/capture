@@ -45,8 +45,8 @@ endif()
 
 # install the applications
 install(PROGRAMS ${PROJECT_SOURCE_DIR}/apps/capture
-                 ${PROJECT_SOURCE_DIR}/apps/orb_template.py
-                 ${PROJECT_SOURCE_DIR}/apps/orb_track.py
+                 ${PROJECT_SOURCE_DIR}/apps/orb_template
+                 ${PROJECT_SOURCE_DIR}/apps/orb_track
                  ${PROJECT_SOURCE_DIR}/apps/upload
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

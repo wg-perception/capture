@@ -98,13 +98,13 @@ given, e.g. my_textured_plane. Press 'q' to quit the template capture program.
 
     .. code-block:: sh
 
-        ./apps/orb_template.py -o my_textured_plane
+        ./apps/orb_template -o my_textured_plane
 
 .. toggle:: ROS
 
     .. code-block:: sh
 
-        rosrun object_recognition_capture orb_template.py -o my_textured_plane
+        rosrun object_recognition_capture orb_template -o my_textured_plane
 
 Try out tracking to see if you got a good template. Press 'q' to quit.
 
@@ -116,13 +116,13 @@ Try out tracking to see if you got a good template. Press 'q' to quit.
 
     .. code-block:: sh
 
-        ./apps/orb_track.py --track_directory my_textured_plane
+        ./apps/orb_track --track_directory my_textured_plane
 
 .. toggle:: ROS
 
     .. code-block:: sh
 
-        rosrun object_recognition_capture orb_track.py --track_directory my_textured_plane
+        rosrun object_recognition_capture orb_track --track_directory my_textured_plane
 
 capture
 -------
