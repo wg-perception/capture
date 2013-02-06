@@ -1,6 +1,6 @@
 <package>
   <name>object_recognition_capture</name>
-  <version>0.2.17</version>
+  <version>0.2.18</version>
   <description>Capture is a set of tools to capture objects in 3D and perform odometry</description>
   <author email="erublee@willowgarage.com">Ethan Rublee</author>
   <maintainer email="vrabaud@willowgarage.com">Vincent Rabaud</maintainer>
