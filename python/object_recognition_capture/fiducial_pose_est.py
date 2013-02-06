@@ -38,7 +38,6 @@ class OpposingDotPoseEstimator(ecto.BlackBox):
                                                  rows=p.rows, cols=p.cols)
         cells['circle_drawer2'] = calib.PatternDrawer('Circle Draw',
                                                  rows=p.rows, cols=p.cols)
-        cells['pose_draw'] = calib.PoseDrawer('Pose Draw')
         cells['fps'] = highgui.FPSDrawer()
 
         return cells
@@ -75,14 +74,10 @@ class OpposingDotPoseEstimator(ecto.BlackBox):
                 ]
         if p.debug:
             graph += [self.rgb_image[:] >> self.circle_drawer['input'],
-                      self.circle_drawer2[:] >> self.pose_draw['image'],
-                      self.pose_calc['R', 'T'] >> self.pose_draw['R', 'T'],
                       self.circle_drawer[:] >> self.circle_drawer2['input'],
                       self.cd_bw['out', 'found'] >> self.circle_drawer['points', 'found'],
                       self.cd_wb['out', 'found'] >> self.circle_drawer2['points', 'found'],
-                      self.gather['found'] >> self.pose_draw['trigger'],
-                      self.camera_info[:] >> self.pose_draw['K'],
-                      self.pose_draw['output'] >> self.fps[:],
+                      self.circle_drawer2[:] >> self.fps[:]
 #                      self.quantizer[:] >> highgui.imshow(name='quantized')[:],
              ]
         return graph

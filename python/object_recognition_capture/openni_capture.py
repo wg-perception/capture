@@ -102,44 +102,44 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
                 compute_normals['normals'] >> plane_est['normals'],
                 source['K', 'points3d'] >> plane_est['K', 'points3d'] ]
 
-    display = highgui.imshow(name='Poses')
     if orb_template:
         # find the pose using ORB
         poser = OrbPoseEstimator(directory=orb_template, show_matches=orb_matches)
         graph += [ source['image', 'K', 'mask_depth', 'points3d'] >> poser['color_image', 'K', 'mask', 'points3d'],
-                   rgb2gray[:] >> poser['image'],
-                   poser['debug_image'] >> display['image'],
+                   rgb2gray[:] >> poser['image']
                  ]
     else:
         # get a pose use the dot pattern: there might be a scale ambiguity as this is 3d only
-        poser_tmp = OpposingDotPoseEstimator(rows=5, cols=3,
+        poser = OpposingDotPoseEstimator(rows=5, cols=3,
                                      pattern_type=calib.ASYMMETRIC_CIRCLES_GRID,
                                      square_size=0.04, debug=True)
-        graph += [ source['image', 'K'] >> poser_tmp['color_image', 'K'],
-                   rgb2gray[:] >> poser_tmp['image'] ]
+        graph += [ source['image', 'K'] >> poser['color_image', 'K'],
+                   rgb2gray[:] >> poser['image'] ]
 
-        # filter the previous pose and resolve the scale ambiguity using 3d
-        poser = object_recognition_capture.ecto_cells.capture.PlaneFilter();
+    # filter the previous pose and resolve the scale ambiguity using 3d
+    pose_filter = object_recognition_capture.ecto_cells.capture.PlaneFilter();
 
-        # make sure the pose is centered at the origin of the plane
-        graph += [ source['K'] >> poser['K'],
-                   poser_tmp['R', 'T'] >> poser['R', 'T'],
-                   plane_est['planes', 'masks'] >> poser['planes', 'masks'] ]
+    # make sure the pose is centered at the origin of the plane
+    graph += [ source['K'] >> pose_filter['K'],
+               poser['R', 'T'] >> pose_filter['R', 'T'],
+               plane_est['planes', 'masks'] >> pose_filter['planes', 'masks'] ]
 
-        # draw the found pose
-        pose_drawer = calib.PoseDrawer('Pose Draw')
-        graph += [ poser['found'] >> pose_drawer['trigger'],
-                   source['K', 'image'] >> pose_drawer['K', 'image'],
-                   poser['R', 'T'] >> pose_drawer['R', 'T'],
-                   pose_drawer['output'] >> display[:] ]
+    # draw the found pose
+    pose_drawer = calib.PoseDrawer('Pose Draw')
+    display = highgui.imshow(name='Poses')
+    graph += [ pose_filter['found'] >> pose_drawer['trigger'],
+               poser['debug_image'] >> pose_drawer['image'],
+               source['K'] >> pose_drawer['K'],
+               pose_filter['R', 'T'] >> pose_drawer['R', 'T'],
+               pose_drawer['output'] >> display[:] ]
 
     delta_pose = ecto.If('delta R|T', cell=object_recognition_capture.DeltaRT(angle_thresh=angle_thresh,
                                                           n_desired=n_desired))
 
     poseMsg = RT2PoseStamped(frame_id='/camera_rgb_optical_frame')
 
-    graph += [ poser['R', 'T', 'found'] >> delta_pose['R', 'T', 'found'],
-               poser['R', 'T'] >> poseMsg['R', 'T'] ]
+    graph += [ pose_filter['R', 'T', 'found'] >> delta_pose['R', 'T', 'found'],
+               pose_filter['R', 'T'] >> poseMsg['R', 'T'] ]
 
     # publish the source data
     rgbMsg = Mat2Image(frame_id='/camera_rgb_optical_frame', swap_rgb=True)
@@ -151,7 +151,7 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
     masker = segmentation_cell
     graph += [ source['points3d'] >> masker['points3d'],
                plane_est['masks', 'planes'] >> masker['masks', 'planes'],
-               poser['T'] >> masker['T'] ]
+               pose_filter['T'] >> masker['T'] ]
 
     # publish the mask
     maskMsg = Mat2Image(frame_id='/camera_rgb_optical_frame')

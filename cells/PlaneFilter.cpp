@@ -74,6 +74,7 @@ struct PlaneFilter
   declare_params(ecto::tendrils& params)
   {
     params.declare(&PlaneFilter::window_size_, "size", "The edge of the central square in which to look for the plane.", 100);
+    params.declare(&PlaneFilter::do_center_, "do_center", "If set to true, the plane origin will be at the center of the image.", false);
   }
 
   static void
@@ -87,8 +88,8 @@ struct PlaneFilter
     inputs.declare(&PlaneFilter::T_in_, "T", "The currently estimated plane origin.");
 
     outputs.declare(&PlaneFilter::coeffs_, "coeffs", "The coefficients of the plane.");
-    outputs.declare(&PlaneFilter::R_, "R", "The rotation component of the plane pose");
-    outputs.declare(&PlaneFilter::T_, "T", "The translation component of the plane pose");
+    outputs.declare(&PlaneFilter::R_out_, "R", "The rotation component of the plane pose");
+    outputs.declare(&PlaneFilter::T_out_, "T", "The translation component of the plane pose");
     outputs.declare(&PlaneFilter::found_, "found", "Whether or not the R|T is good.");
   }
 
@@ -97,11 +98,22 @@ struct PlaneFilter
   {
     // Get the origin of the plane
     cv::Point origin;
-    if (T_in_) {
-      cv::Vec3f T = cv::Mat((*K_) * (*T_in_));
-      origin = cv::Point(T(0)/T(2), T(1)/T(2));
-    } else
+
+    cv::Matx33f K, R;
+    cv::Vec3f T;
+    if (*do_center_)
       origin = cv::Point(masks_->cols/2, masks_->rows/2);
+    else {
+      if (!K_ || K_->empty() || !R_in_ || R_in_->empty() || !T_in_ || T_in_->empty()) {
+        *found_ = false;
+        return ecto::OK;
+      }
+      K = *K_;
+      R = *R_in_;
+      T = *T_in_;
+      cv::Vec3f T = K*T;
+      origin = cv::Point(T(0)/T(2), T(1)/T(2));
+    }
 
     // Go over the plane masks and simply count the occurrence of each mask
     std::vector<int> occurrences(256, 0);
@@ -112,6 +124,7 @@ struct PlaneFilter
         if (*mask != 255)
           ++occurrences[*mask];
     }
+
     // Find the most common plane
     int best_index = -1;
     int best_count = 0;
@@ -121,6 +134,7 @@ struct PlaneFilter
         best_count = occurrences[i];
       }
     }
+
     // Convert the plane coefficients to R,t
     cv::Matx33f rotation;
     cv::Vec3f translation;
@@ -129,51 +143,50 @@ struct PlaneFilter
       float a = (*coeffs_)[0], b = (*coeffs_)[1], c = (*coeffs_)[2], d = (*coeffs_)[3];
 
       // Deal with translation
-      if (T_in_) {
-        rotation = *R_in_;
+      if (*do_center_) {
+        getPlaneTransform(*coeffs_, rotation, translation);
+        // Make sure T_ points to the center of the image
+        translation = cv::Vec3f(0,0,-d/c);
+      } else {
         // Have T_ point to the origin. Find alpha such that alpha*Kinv*origin is on the plane
-        cv::Matx33f K_inv = cv::Mat(K_->inv());
+        cv::Matx33f K_inv = K.inv();
         cv::Vec3f origin_inv = cv::Mat(K_inv * cv::Vec3f(origin.x, origin.y, 1));
         float alpha = -d/(a*origin_inv(0) + b*origin_inv(1) + c*origin_inv(2));
         translation = alpha*origin_inv;
         if (translation(2) < 0)
           translation = -translation;
-      } else {
-        getPlaneTransform(*coeffs_, rotation, translation);
-        // Make sure T_ points to the center of the image
-        translation = cv::Vec3f(0,0,-d/c);
+
+        // Make the rotation fit to the plane (but as close as possible to the current estimate
+        // Get the Z axis
+        cv::Vec3f N(a, b, c);
+        N = N/cv::norm(N);
+        // Get the X, Y axes
+        cv::Vec3f vecX(R(0,0), R(1,0), R(2,0));
+        cv::Vec3f vecY(R(0,1), R(1,1), R(2,1));
+        // Project them onto the plane
+        vecX = vecX - vecX.dot(N)*N;
+        vecY = vecY - vecY.dot(N)*N;
+        vecX = vecX/cv::norm(vecX);
+        vecY = vecY/cv::norm(vecY);
+        // Get the median
+        cv::Vec3f median = vecX + vecY;
+        median = median/cv::norm(median);
+        // Get a new basis
+        cv::Vec3f vecYtmp = vecY - median.dot(vecY)*median;
+        cv::Vec3f vecXtmp = vecX - median.dot(vecX)*median;
+        vecYtmp = vecYtmp/cv::norm(vecYtmp);
+        vecXtmp = vecXtmp/cv::norm(vecXtmp);
+        // Get the rectified X/Y axes
+        cv::Vec3f vecXnew = median + vecXtmp;
+        cv::Vec3f vecYnew = median + vecYtmp;
+        vecXnew = vecXnew/cv::norm(vecXnew);
+        vecYnew = vecYnew/cv::norm(vecYnew);
+        // Fill in the matrix
+        rotation = cv::Matx33f(vecXnew(0), vecYnew(0), N(0), vecXnew(1), vecYnew(1), N(1), vecXnew(2), vecYnew(2), N(2));
       }
 
-      // Make the rotation fit to the plane (but as close as possible to the current estimate
-      // Get the Z axis
-      cv::Vec3f N(a, b, c);
-      N = N/cv::norm(N);
-      // Get the X, Y axes
-      cv::Vec3f vecX(rotation(0,0), rotation(1,0), rotation(2,0));
-      cv::Vec3f vecY(rotation(0,1), rotation(1,1), rotation(2,1));
-      // Project them onto the plane
-      vecX = vecX - vecX.dot(N)*N;
-      vecY = vecY - vecY.dot(N)*N;
-      vecX = vecX/cv::norm(vecX);
-      vecY = vecY/cv::norm(vecY);
-      // Get the median
-      cv::Vec3f median = vecX + vecY;
-      median = median/cv::norm(median);
-      // Get a new basis
-      cv::Vec3f vecYtmp = vecY - median.dot(vecY)*median;
-      cv::Vec3f vecXtmp = vecX - median.dot(vecX)*median;
-      vecYtmp = vecYtmp/cv::norm(vecYtmp);
-      vecXtmp = vecXtmp/cv::norm(vecXtmp);
-      // Get the rectified X/Y axes
-      cv::Vec3f vecXnew = median + vecXtmp;
-      cv::Vec3f vecYnew = median + vecYtmp;
-      vecXnew = vecXnew/cv::norm(vecXnew);
-      vecYnew = vecYnew/cv::norm(vecYnew);
-      // Fill in the matrix
-      cv::Matx33f rotation_rect(vecXnew(0), vecYnew(0), N(0), vecXnew(1), vecYnew(1), N(1), vecXnew(2), vecYnew(2), N(2));
-
-      *R_ = cv::Mat(rotation_rect);
-      *T_ = cv::Mat(translation);
+      *R_out_ = cv::Mat(rotation);
+      *T_out_ = cv::Mat(translation);
       *found_ = true;
     } else
       *found_ = false;
@@ -187,9 +200,9 @@ private:
   ecto::spore<cv::Mat> masks_;
 
   /** The ouput plane rotation */
-  ecto::spore<cv::Mat> R_;
+  ecto::spore<cv::Mat> R_out_;
   /** The ouput plane translation */
-  ecto::spore<cv::Mat> T_;
+  ecto::spore<cv::Mat> T_out_;
 
   /** The edge of the square at the center of the image in which to look for the biggest plane */
   ecto::spore<int> window_size_;
@@ -201,6 +214,8 @@ private:
   ecto::spore<cv::Mat> T_in_;
   /** Whether a pose was found or not */
   ecto::spore<bool> found_;
+  /** Whether the plane origin is the center of the image or not */
+  ecto::spore<bool> do_center_;
 };
 
 ECTO_CELL(capture, PlaneFilter, "PlaneFilter",

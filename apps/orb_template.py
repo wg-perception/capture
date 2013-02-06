@@ -67,7 +67,7 @@ plasm.connect(orb['keypoints'] >> draw_kpts['keypoints'],
 plane_est = PlaneFinder(min_size=10000)
 compute_normals = ComputeNormals()
 pose_draw = PoseDrawer()
-plane_filter = PlaneFilter()
+plane_filter = PlaneFilter(do_center=True)
 plasm.connect(# find the normals
               source['K', 'points3d'] >> compute_normals['K', 'points3d'],
               # find the planes
