@@ -128,6 +128,7 @@ struct PlaneFilter
       *coeffs_ = (*planes_)[best_index];
       float a = (*coeffs_)[0], b = (*coeffs_)[1], c = (*coeffs_)[2], d = (*coeffs_)[3];
 
+      // Deal with translation
       if (T_in_) {
         rotation = *R_in_;
         // Have T_ point to the origin. Find alpha such that alpha*Kinv*origin is on the plane
@@ -142,7 +143,36 @@ struct PlaneFilter
         // Make sure T_ points to the center of the image
         translation = cv::Vec3f(0,0,-d/c);
       }
-      *R_ = cv::Mat(rotation);
+
+      // Make the rotation fit to the plane (but as close as possible to the current estimate
+      // Get the Z axis
+      cv::Vec3f N(a, b, c);
+      N = N/cv::norm(N);
+      // Get the X, Y axes
+      cv::Vec3f vecX(rotation(0,0), rotation(1,0), rotation(2,0));
+      cv::Vec3f vecY(rotation(0,1), rotation(1,1), rotation(2,1));
+      // Project them onto the plane
+      vecX = vecX - vecX.dot(N)*N;
+      vecY = vecY - vecY.dot(N)*N;
+      vecX = vecX/cv::norm(vecX);
+      vecY = vecY/cv::norm(vecY);
+      // Get the median
+      cv::Vec3f median = vecX + vecY;
+      median = median/cv::norm(median);
+      // Get a new basis
+      cv::Vec3f vecYtmp = vecY - median.dot(vecY)*median;
+      cv::Vec3f vecXtmp = vecX - median.dot(vecX)*median;
+      vecYtmp = vecYtmp/cv::norm(vecYtmp);
+      vecXtmp = vecXtmp/cv::norm(vecXtmp);
+      // Get the rectified X/Y axes
+      cv::Vec3f vecXnew = median + vecXtmp;
+      cv::Vec3f vecYnew = median + vecYtmp;
+      vecXnew = vecXnew/cv::norm(vecXnew);
+      vecYnew = vecYnew/cv::norm(vecYnew);
+      // Fill in the matrix
+      cv::Matx33f rotation_rect(vecXnew(0), vecYnew(0), N(0), vecXnew(1), vecYnew(1), N(1), vecXnew(2), vecYnew(2), N(2));
+
+      *R_ = cv::Mat(rotation_rect);
       *T_ = cv::Mat(translation);
       *found_ = true;
     } else
