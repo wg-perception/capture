@@ -16,7 +16,8 @@ import ecto
 import os
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Computes the ORB feature and descriptor template that may be used as a fiducial marker.')
+    parser = argparse.ArgumentParser(description='Save an ORB template that may be used as a '
+                                                 'fiducial marker when pressing the key "s". "q" to quit')
     parser.add_argument('-o,--output', dest='output', type=str,
                         help='The output directory for this template. Default: %(default)s', default='./')
     parser.add_argument('-n_features', dest='n_features', type=int,
