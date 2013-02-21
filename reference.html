@@ -1,0 +1,953 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>capture cells &mdash; object_recognition_capture</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/breathe.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="object_recognition_capture" href="index.html" />
+    <link rel="prev" title="object_recognition_capture: Data Capture" href="index.html" />
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-25500792-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<!--Extra javascript to deal with a toggle effect-->
+<script language="javascript"> 
+function toggle() {
+    var link1 = $('.toggleable_link_1'), link2 = $('.toggleable_link_2');
+    var div1 = $('.toggleable_div_1'), div2 = $('.toggleable_div_2');
+    if(link1.css("display") == "none") {
+        link1.css("display", "block");
+        div1.css("display", "block");
+        link2.css("display", "none");
+        div2.css("display", "none");
+    } else {
+        link1.css("display", "none");
+        div1.css("display", "none");
+        link2.css("display", "block");
+        div2.css("display", "block");
+    }
+} 
+</script>
+<script language="javascript"> 
+$(document).ready(function() {
+    toggle();toggle();
+});
+</script>
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="index.html" title="object_recognition_capture: Data Capture"
+             accesskey="P">previous</a> |</li>
+    <li><a href="http://ecto.willowgarage.com/recognition">ecto.willowgarage.com/recognition</a> &raquo;</li>
+    
+        <li><a href="index.html">object_recognition_capture</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">object_recognition_capture: Data Capture</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/reference.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="capture-cells">
+<h1>capture cells<a class="headerlink" href="#capture-cells" title="Permalink to this headline">¶</a></h1>
+<h1>object_recognition_capture<a class="headerlink" href="#capture-cells" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="MatchRefinementHSvd">
+<span id="index-0"></span><span id="object_recognition_capture.MatchRefinementHSvd"></span><h2>MatchRefinementHSvd<a class="headerlink" href="#MatchRefinementHSvd" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p>A feature descriptor match refiner, using Homography and svd estimation.</p>
+</p>
+<p class="topic-title first">Parameters<ul>
+<li><p class="first"><strong>inlier_thresh</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">float</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">25.0</span></tt></p>
+<p>The inlier threshold of pose found.</p>
+</li>
+<li><p class="first"><strong>min_inliers</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">100</span></tt></p>
+<p>minimum number of inliers</p>
+</li>
+<li><p class="first"><strong>n_iters</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">200</span></tt></p>
+<p>number of ransac iterations</p>
+</li>
+<li><p class="first"><strong>reprojection_error</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">float</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">43.5</span></tt></p>
+<p>error threshold</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Inputs<ul>
+<li><p class="first"><strong>matches</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">std::vector&lt;cv::DMatch,</span> <span class="pre">std::allocator&lt;cv::DMatch&gt;</span> <span class="pre">&gt;</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The descriptor matches.</p>
+</li>
+<li><p class="first"><strong>test_2d</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The 2d test points.</p>
+</li>
+<li><p class="first"><strong>test_3d</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The 3d test points.</p>
+</li>
+<li><p class="first"><strong>train_2d</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The 2d training points.</p>
+</li>
+<li><p class="first"><strong>train_3d</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The 3d training points.</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>R</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p></p>
+</li>
+<li><p class="first"><strong>T</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p></p>
+</li>
+<li><p class="first"><strong>found</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">bool</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p></p>
+</li>
+<li><p class="first"><strong>matches</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">std::vector&lt;cv::DMatch,</span> <span class="pre">std::allocator&lt;cv::DMatch&gt;</span> <span class="pre">&gt;</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The verified matches.</p>
+</li>
+<li><p class="first"><strong>matches_mask</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The matches mask, same size as the original matches.</p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+<div class="section" id="PoseDrawer">
+<span id="index-1"></span><span id="object_recognition_capture.PoseDrawer"></span><h2>PoseDrawer<a class="headerlink" href="#PoseDrawer" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p>Draw pose</p>
+</p>
+<p></p>
+<p class="topic-title first">Inputs<ul>
+<li><p class="first"><strong>K</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The camera projection matrix.</p>
+</li>
+<li><p class="first"><strong>R</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>3x3 Rotation matrix.</p>
+</li>
+<li><p class="first"><strong>T</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>3x1 Translation vector.</p>
+</li>
+<li><p class="first"><strong>image</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The original image to draw the pose onto.</p>
+</li>
+<li><p class="first"><strong>trigger</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">bool</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Should i draw.</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>output</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The pose of the fiducial, drawn on an image</p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+<div class="section" id="LSHMatcher">
+<span id="index-2"></span><span id="object_recognition_capture.LSHMatcher"></span><h2>LSHMatcher<a class="headerlink" href="#LSHMatcher" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p>Given descriptors, find matches.</p>
+</p>
+<p class="topic-title first">Parameters<ul>
+<li><p class="first"><strong>key_size</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">8</span></tt></p>
+<p></p>
+</li>
+<li><p class="first"><strong>multi_probe_level</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">1</span></tt></p>
+<p></p>
+</li>
+<li><p class="first"><strong>n_tables</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">4</span></tt></p>
+<p></p>
+</li>
+<li><p class="first"><strong>radius</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">55</span></tt></p>
+<p></p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Inputs<ul>
+<li><p class="first"><strong>test</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Train descriptors.</p>
+</li>
+<li><p class="first"><strong>train</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Test descriptors.</p>
+</li>
+<li><p class="first"><strong>update</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">bool</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>If set to true, update the descriptors.</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>matches</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">std::vector&lt;cv::DMatch,</span> <span class="pre">std::allocator&lt;cv::DMatch&gt;</span> <span class="pre">&gt;</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The descriptor matches.</p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+<div class="section" id="DeltaRT">
+<span id="index-3"></span><span id="object_recognition_capture.DeltaRT"></span><h2>DeltaRT<a class="headerlink" href="#DeltaRT" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p>Uses the R|T of the camera to determine when a frame in novel.</p>
+</p>
+<p class="topic-title first">Parameters<ul>
+<li><p class="first"><strong>angle_thresh</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">double</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">0.0872664625997</span></tt></p>
+<p>The angle thresh hold.</p>
+</li>
+<li><p class="first"><strong>n_desired</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">4294967295</span></tt></p>
+<p>The number of desired views</p>
+</li>
+<li><p class="first"><strong>reset</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">bool</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">False</span></tt></p>
+<p>Reset observations.</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Inputs<ul>
+<li><p class="first"><strong>R</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The orientation.</p>
+</li>
+<li><p class="first"><strong>T</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The translation.</p>
+</li>
+<li><p class="first"><strong>found</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">bool</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Whether or not the R|T is good.</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>novel</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">bool</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Whether or not the R|T is novel relative to previous novel R|T poses.</p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+<div class="section" id="FPSDrawer">
+<span id="index-4"></span><span id="object_recognition_capture.FPSDrawer"></span><h2>FPSDrawer<a class="headerlink" href="#FPSDrawer" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p>Draw the Hz on an image.</p>
+</p>
+<p></p>
+<p class="topic-title first">Inputs<ul>
+<li><p class="first"><strong>image</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The original image to draw the pose onto.</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>image</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The image with fps drawn on it.</p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+<div class="section" id="Matcher">
+<span id="index-5"></span><span id="object_recognition_capture.Matcher"></span><h2>Matcher<a class="headerlink" href="#Matcher" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p>A feature descriptor matcher.</p>
+</p>
+<p></p>
+<p class="topic-title first">Inputs<ul>
+<li><p class="first"><strong>test</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Train descriptors.</p>
+</li>
+<li><p class="first"><strong>train</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Test descriptors.</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>matches</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">std::vector&lt;cv::DMatch,</span> <span class="pre">std::allocator&lt;cv::DMatch&gt;</span> <span class="pre">&gt;</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The descriptor matches.</p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+<div class="section" id="DrawMatches">
+<span id="index-6"></span><span id="object_recognition_capture.DrawMatches"></span><h2>DrawMatches<a class="headerlink" href="#DrawMatches" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p>Draws matches.</p>
+</p>
+<p></p>
+<p class="topic-title first">Inputs<ul>
+<li><p class="first"><strong>matches</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">std::vector&lt;cv::DMatch,</span> <span class="pre">std::allocator&lt;cv::DMatch&gt;</span> <span class="pre">&gt;</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The descriptor matches.</p>
+</li>
+<li><p class="first"><strong>matches_mask</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The descriptor matches mask.</p>
+</li>
+<li><p class="first"><strong>test</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Test keypoints.</p>
+</li>
+<li><p class="first"><strong>test_image</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Test image.</p>
+</li>
+<li><p class="first"><strong>train</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Train keypoints</p>
+</li>
+<li><p class="first"><strong>train_image</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Test image.</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>output</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>An output image.</p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+<div class="section" id="imshow">
+<span id="index-7"></span><span id="object_recognition_capture.imshow"></span><h2>imshow<a class="headerlink" href="#imshow" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p>Displays an image. If a dictionary is defined in triggers, each key is defined as an output, the value being a bool of whether it&#8217;s been pressed</p>
+</p>
+<p class="topic-title first">Parameters<ul>
+<li><p class="first"><strong>autoSize</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">bool</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">True</span></tt></p>
+<p>Autosize the window.</p>
+</li>
+<li><p class="first"><strong>maximize</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">bool</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">False</span></tt></p>
+<p>Fullscreen the window, takes precedence over autoSize.</p>
+</li>
+<li><p class="first"><strong>name</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">std::string</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">image</span></tt></p>
+<p>The window name</p>
+</li>
+<li><p class="first"><strong>triggers</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">boost::python::api::object</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> no default value</em></p>
+<p>A dict of trigger keys, e.g. {&#8216;x_key&#8217;:ord(&#8216;x&#8217;)}</p>
+</li>
+<li><p class="first"><strong>waitKey</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">-1</span></tt></p>
+<p>Number of millis to wait, -1 for not at all, 0 for infinity.</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Inputs<ul>
+<li><p class="first"><strong>image</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The image to show</p>
+</li>
+</ul>
+</p>
+<p></p>
+</div>
+</div>
+<div class="section" id="MatReader">
+<span id="index-8"></span><span id="object_recognition_capture.MatReader"></span><h2>MatReader<a class="headerlink" href="#MatReader" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p>Read a cv::Mat from a yaml or xml file.</p>
+</p>
+<p class="topic-title first">Parameters<ul>
+<li><p class="first"><strong>filename</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">std::string</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"></tt></p>
+<p>Name of mat to read.</p>
+</li>
+</ul>
+</p>
+<p></p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>mat</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>A mat to print.</p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+<div class="section" id="imread">
+<span id="index-9"></span><span id="object_recognition_capture.imread"></span><h2>imread<a class="headerlink" href="#imread" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p>Reads a single image, const cell.</p>
+</p>
+<p class="topic-title first">Parameters<ul>
+<li><p class="first"><strong>image_file</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">std::string</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">lena.jpg</span></tt></p>
+<p>The path to the image to read.</p>
+</li>
+<li><p class="first"><strong>lock_name</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">std::string</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"></tt></p>
+<p>If set to something, an flock will be created for that file</p>
+</li>
+<li><p class="first"><strong>mode</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">ecto_opencv::Image::Modes</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">COLOR</span></tt><p><em>Legal Values: </em><tt class="docutils literal"><span class="pre">GRAYSCALE</span> <span class="pre">(0)</span>&nbsp;&nbsp; </tt><tt class="docutils literal"><span class="pre">COLOR</span> <span class="pre">(1)</span>&nbsp;&nbsp; </tt><tt class="docutils literal"><span class="pre">ANYDEPTH</span> <span class="pre">(2)</span>&nbsp;&nbsp; </tt><tt class="docutils literal"><span class="pre">ANYCOLOR</span> <span class="pre">(4)</span>&nbsp;&nbsp; </tt><tt class="docutils literal"><span class="pre">UNCHANGED</span> <span class="pre">(-1)</span>&nbsp;&nbsp; </tt></p>
+</p>
+<p>The image read mode.</p>
+</li>
+<li><p class="first"><strong>refresh</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">bool</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">False</span></tt></p>
+<p>If true, the image is re-read every time</p>
+</li>
+</ul>
+</p>
+<p></p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>image</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The image in full color.</p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+<div class="section" id="OrbPoseEstimator">
+<span id="index-10"></span><span id="object_recognition_capture.OrbPoseEstimator"></span><h2>OrbPoseEstimator<a class="headerlink" href="#OrbPoseEstimator" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p></p>
+</p>
+<p class="topic-title first">Parameters<ul>
+<li><p class="first"><strong>directory</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">boost::python::api::object</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">.</span></tt></p>
+<p>The template directory.</p>
+</li>
+<li><p class="first"><strong>inlier_thresh</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">float</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">25.0</span></tt></p>
+<p>The inlier threshold of pose found.</p>
+</li>
+<li><p class="first"><strong>key_size</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">8</span></tt></p>
+<p></p>
+</li>
+<li><p class="first"><strong>min_inliers</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">100</span></tt></p>
+<p>minimum number of inliers</p>
+</li>
+<li><p class="first"><strong>multi_probe_level</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">1</span></tt></p>
+<p></p>
+</li>
+<li><p class="first"><strong>n_features</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">1000</span></tt></p>
+<p>The number of desired features</p>
+</li>
+<li><p class="first"><strong>n_iters</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">200</span></tt></p>
+<p>number of ransac iterations</p>
+</li>
+<li><p class="first"><strong>n_levels</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">3</span></tt></p>
+<p>The number of scales</p>
+</li>
+<li><p class="first"><strong>n_tables</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">4</span></tt></p>
+<p></p>
+</li>
+<li><p class="first"><strong>nonmax</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">bool</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">True</span></tt></p>
+<p>Use the FAST nonmax suppression.</p>
+</li>
+<li><p class="first"><strong>radius</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">unsigned</span> <span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">55</span></tt></p>
+<p></p>
+</li>
+<li><p class="first"><strong>reprojection_error</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">float</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">43.5</span></tt></p>
+<p>error threshold</p>
+</li>
+<li><p class="first"><strong>scale_factor</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">float</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">1.20000004768</span></tt></p>
+<p>The factor between scales</p>
+</li>
+<li><p class="first"><strong>show_matches</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">boost::python::api::object</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">False</span></tt></p>
+<p>Display the matches.</p>
+</li>
+<li><p class="first"><strong>thresh</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">20</span></tt></p>
+<p>The FAST threshold. 20 is a decent value.</p>
+</li>
+<li><p class="first"><strong>use_fast</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">boost::python::api::object</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">False</span></tt></p>
+<p>Use fast or not.</p>
+</li>
+<li><p class="first"><strong>use_lsh</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">boost::python::api::object</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">True</span></tt></p>
+<p>Use lsh for matching instead of brute force.</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Inputs<ul>
+<li><p class="first"><strong>K</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">ecto::tendril::none</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Any type</p>
+</li>
+<li><p class="first"><strong>color_image</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">ecto::tendril::none</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Any type</p>
+</li>
+<li><p class="first"><strong>image</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">ecto::tendril::none</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Any type</p>
+</li>
+<li><p class="first"><strong>mask</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">ecto::tendril::none</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Any type</p>
+</li>
+<li><p class="first"><strong>points3d</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">ecto::tendril::none</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Any type</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>R</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>3x3 Rotation matrix.</p>
+</li>
+<li><p class="first"><strong>T</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>3x1 Translation vector.</p>
+</li>
+<li><p class="first"><strong>debug_image</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The image with fps drawn on it.</p>
+</li>
+<li><p class="first"><strong>found</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">bool</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p></p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+<div class="section" id="PlaneFilter">
+<span id="index-11"></span><span id="object_recognition_capture.PlaneFilter"></span><h2>PlaneFilter<a class="headerlink" href="#PlaneFilter" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p>Takes a set of planes and returns the one overlaping most with the center of the image</p>
+</p>
+<p class="topic-title first">Parameters<ul>
+<li><p class="first"><strong>do_center</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">bool</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">False</span></tt></p>
+<p>If set to true, the plane origin will be at the center of the image.</p>
+</li>
+<li><p class="first"><strong>size</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">100</span></tt></p>
+<p>The edge of the central square in which to look for the plane.</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Inputs<ul>
+<li><p class="first"><strong>K</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The calibration matrix.</p>
+</li>
+<li><p class="first"><strong>R</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The currently estimated plane rotation.</p>
+</li>
+<li><p class="first"><strong>T</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The currently estimated plane origin.</p>
+</li>
+<li><p class="first"><strong>masks</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The masks for each plane.</p>
+</li>
+<li><p class="first"><strong>planes</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">std::vector&lt;cv::Vec&lt;float,</span> <span class="pre">4&gt;,</span> <span class="pre">std::allocator&lt;cv::Vec&lt;float,</span> <span class="pre">4&gt;</span> <span class="pre">&gt;</span> <span class="pre">&gt;</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The different found planes (a,b,c,d) of equation ax+by+cz+d=0.</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>R</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The rotation component of the plane pose</p>
+</li>
+<li><p class="first"><strong>T</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The translation component of the plane pose</p>
+</li>
+<li><p class="first"><strong>coeffs</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Vec&lt;float,</span> <span class="pre">4&gt;</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The coefficients of the plane.</p>
+</li>
+<li><p class="first"><strong>found</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">bool</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Whether or not the R|T is good.</p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+<div class="section" id="TemplateLoader">
+<span id="index-12"></span><span id="object_recognition_capture.TemplateLoader"></span><h2>TemplateLoader<a class="headerlink" href="#TemplateLoader" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p></p>
+</p>
+<p class="topic-title first">Parameters<ul>
+<li><p class="first"><strong>directory</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">boost::python::api::object</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">.</span></tt></p>
+<p>The directory of the template.</p>
+</li>
+</ul>
+</p>
+<p></p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>R</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>A mat to print.</p>
+</li>
+<li><p class="first"><strong>T</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>A mat to print.</p>
+</li>
+<li><p class="first"><strong>descriptors</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>A mat to print.</p>
+</li>
+<li><p class="first"><strong>image</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The image in full color.</p>
+</li>
+<li><p class="first"><strong>points</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>A mat to print.</p>
+</li>
+<li><p class="first"><strong>points3d</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>A mat to print.</p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+<div class="section" id="OpposingDotPoseEstimator">
+<span id="index-13"></span><span id="object_recognition_capture.OpposingDotPoseEstimator"></span><h2>OpposingDotPoseEstimator<a class="headerlink" href="#OpposingDotPoseEstimator" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p></p>
+</p>
+<p class="topic-title first">Parameters<ul>
+<li><p class="first"><strong>cols</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">boost::python::api::object</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">7</span></tt></p>
+<p>Number of cols in the pattern.</p>
+</li>
+<li><p class="first"><strong>debug</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">boost::python::api::object</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">True</span></tt></p>
+<p>Debug the detector.</p>
+</li>
+<li><p class="first"><strong>pattern_type</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">boost::python::api::object</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">ASYMMETRIC_CIRCLES_GRID</span></tt><p><em>Legal Values: </em><tt class="docutils literal"><span class="pre">CHESSBOARD</span> <span class="pre">(0)</span>&nbsp;&nbsp; </tt><tt class="docutils literal"><span class="pre">CIRCLES_GRID</span> <span class="pre">(1)</span>&nbsp;&nbsp; </tt><tt class="docutils literal"><span class="pre">ASYMMETRIC_CIRCLES_GRID</span> <span class="pre">(2)</span>&nbsp;&nbsp; </tt></p>
+</p>
+<p>Type of pattern</p>
+</li>
+<li><p class="first"><strong>rows</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">boost::python::api::object</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">11</span></tt></p>
+<p>Number of rows in the pattern.</p>
+</li>
+<li><p class="first"><strong>square_size</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">boost::python::api::object</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">0.1</span></tt></p>
+<p>The pattern spacing</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Inputs<ul>
+<li><p class="first"><strong>K</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">ecto::tendril::none</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Any type</p>
+</li>
+<li><p class="first"><strong>color_image</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">ecto::tendril::none</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Any type</p>
+</li>
+<li><p class="first"><strong>image</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">ecto::tendril::none</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Any type</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>R</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>3x3 Rotation matrix.</p>
+</li>
+<li><p class="first"><strong>T</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>3x1 Translation vector.</p>
+</li>
+<li><p class="first"><strong>debug_image</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The image with fps drawn on it.</p>
+</li>
+<li><p class="first"><strong>found</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">bool</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>Found some points.</p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+<div class="section" id="FASTFeature">
+<span id="index-14"></span><span id="object_recognition_capture.FASTFeature"></span><h2>FASTFeature<a class="headerlink" href="#FASTFeature" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p>A FAST feature detector.</p>
+</p>
+<p class="topic-title first">Parameters<ul>
+<li><p class="first"><strong>nonmax</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">bool</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">True</span></tt></p>
+<p>Use the FAST nonmax suppression.</p>
+</li>
+<li><p class="first"><strong>thresh</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">20</span></tt></p>
+<p>The FAST threshold. 20 is a decent value.</p>
+</li>
+</ul>
+</p>
+<p></p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>image</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>An input image.</p>
+</li>
+<li><p class="first"><strong>keypoints</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">std::vector&lt;cv::KeyPoint,</span> <span class="pre">std::allocator&lt;cv::KeyPoint&gt;</span> <span class="pre">&gt;</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The keypoints.</p>
+</li>
+<li><p class="first"><strong>mask</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>An mask, same size as image.</p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+<div class="section" id="TransformCompose">
+<span id="index-15"></span><span id="object_recognition_capture.TransformCompose"></span><h2>TransformCompose<a class="headerlink" href="#TransformCompose" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p>Compose to transforms.</p>
+</p>
+<p></p>
+<p class="topic-title first">Inputs<ul>
+<li><p class="first"><strong>R1</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>3x3 Rotation matrix.</p>
+</li>
+<li><p class="first"><strong>R2</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>3x3 Rotation matrix.</p>
+</li>
+<li><p class="first"><strong>T1</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>3x1 Translation vector.</p>
+</li>
+<li><p class="first"><strong>T2</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>3x1 Translation vector.</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>R</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>3x3 Rotation matrix.</p>
+</li>
+<li><p class="first"><strong>T</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>3x1 Translation vector.</p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+<div class="section" id="KeypointsToMat">
+<span id="index-16"></span><span id="object_recognition_capture.KeypointsToMat"></span><h2>KeypointsToMat<a class="headerlink" href="#KeypointsToMat" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p>Take key points and return an array of the x,y coordinates.</p>
+</p>
+<p></p>
+<p class="topic-title first">Inputs<ul>
+<li><p class="first"><strong>keypoints</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">std::vector&lt;cv::KeyPoint,</span> <span class="pre">std::allocator&lt;cv::KeyPoint&gt;</span> <span class="pre">&gt;</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The keypoints</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>points</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The array of x,y coordinates</p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+<div class="section" id="Select3d">
+<span id="index-17"></span><span id="object_recognition_capture.Select3d"></span><h2>Select3d<a class="headerlink" href="#Select3d" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p>Select 3D points given 2D locations.</p>
+</p>
+<p></p>
+<p class="topic-title first">Inputs<ul>
+<li><p class="first"><strong>points</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The 2d coordinates (matrix with 2 channels)</p>
+</li>
+<li><p class="first"><strong>points3d</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The 3d points to select from.</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>points3d</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The 3d points, same dimensions as the input, 3 channels (x, y and z).</p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+<div class="section" id="Select3dRegion">
+<span id="index-18"></span><span id="object_recognition_capture.Select3dRegion"></span><h2>Select3dRegion<a class="headerlink" href="#Select3dRegion" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p>Select 3D points given a radius in the center of the image.</p>
+</p>
+<p class="topic-title first">Parameters<ul>
+<li><p class="first"><strong>radius</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">float</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">0.0</span></tt></p>
+<p>A radius, in pixel with which to select a plane, from the center.</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Inputs<ul>
+<li><p class="first"><strong>image</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>To base the size off of.</p>
+</li>
+<li><p class="first"><strong>points3d</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The 3d points to select from.</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>points3d</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The 3d points, same dimensions as the input, 3 channels (x, y and z).</p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+<div class="section" id="FeatureFinder">
+<span id="index-19"></span><span id="object_recognition_capture.FeatureFinder"></span><h2>FeatureFinder<a class="headerlink" href="#FeatureFinder" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p></p>
+</p>
+<p class="topic-title first">Parameters<ul>
+<li><p class="first"><strong>n_features</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">1000</span></tt></p>
+<p>The number of desired features</p>
+</li>
+<li><p class="first"><strong>n_levels</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">3</span></tt></p>
+<p>The number of scales</p>
+</li>
+<li><p class="first"><strong>nonmax</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">bool</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">True</span></tt></p>
+<p>Use the FAST nonmax suppression.</p>
+</li>
+<li><p class="first"><strong>scale_factor</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">float</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">1.20000004768</span></tt></p>
+<p>The factor between scales</p>
+</li>
+<li><p class="first"><strong>thresh</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">20</span></tt></p>
+<p>The FAST threshold. 20 is a decent value.</p>
+</li>
+<li><p class="first"><strong>use_fast</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">boost::python::api::object</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">False</span></tt></p>
+<p>Use fast or not.</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Inputs<ul>
+<li><p class="first"><strong>image</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>An input image.</p>
+</li>
+<li><p class="first"><strong>keypoints</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">std::vector&lt;cv::KeyPoint,</span> <span class="pre">std::allocator&lt;cv::KeyPoint&gt;</span> <span class="pre">&gt;</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The keypoints.</p>
+</li>
+<li><p class="first"><strong>mask</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>An mask, same size as image.</p>
+</li>
+<li><p class="first"><strong>points</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>2d points.</p>
+</li>
+<li><p class="first"><strong>points3d</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The 3d points to select from.</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>descriptors</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The descriptors per keypoints</p>
+</li>
+<li><p class="first"><strong>keypoints</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">std::vector&lt;cv::KeyPoint,</span> <span class="pre">std::allocator&lt;cv::KeyPoint&gt;</span> <span class="pre">&gt;</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The keypoints.</p>
+</li>
+<li><p class="first"><strong>points</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The array of x,y coordinates</p>
+</li>
+<li><p class="first"><strong>points3d</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The 3d points, same dimensions as the input, 3 channels (x, y and z).</p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+<div class="section" id="ORB">
+<span id="index-20"></span><span id="object_recognition_capture.ORB"></span><h2>ORB<a class="headerlink" href="#ORB" title="Permalink to this headline">¶</a></h2>
+<p></p>
+<div class="topic">
+<p class="topic-title first">Brief doc<p>An ORB detector. Takes a image and a mask, and computes keypoints and descriptors(32 byte binary).</p>
+</p>
+<p class="topic-title first">Parameters<ul>
+<li><p class="first"><strong>n_features</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">1000</span></tt></p>
+<p>The number of desired features</p>
+</li>
+<li><p class="first"><strong>n_levels</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">int</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">3</span></tt></p>
+<p>The number of scales</p>
+</li>
+<li><p class="first"><strong>scale_factor</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">float</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt><em> not </em><em>required</em><tt class="docutils literal">&nbsp;&nbsp; </tt><em> default: </em><tt class="docutils literal"><span class="pre">1.20000004768</span></tt></p>
+<p>The factor between scales</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Inputs<ul>
+<li><p class="first"><strong>image</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>An input image.</p>
+</li>
+<li><p class="first"><strong>keypoints</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">std::vector&lt;cv::KeyPoint,</span> <span class="pre">std::allocator&lt;cv::KeyPoint&gt;</span> <span class="pre">&gt;</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The keypoints.</p>
+</li>
+<li><p class="first"><strong>mask</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>An mask, same size as image.</p>
+</li>
+<li><p class="first"><strong>points</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>2d points.</p>
+</li>
+</ul>
+</p>
+<p class="topic-title first">Outputs<ul>
+<li><p class="first"><strong>descriptors</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">cv::Mat</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The descriptors per keypoints</p>
+</li>
+<li><p class="first"><strong>keypoints</strong><tt class="docutils literal">&nbsp;&nbsp; </tt><em>   type: </em><tt class="docutils literal"><span class="pre">std::vector&lt;cv::KeyPoint,</span> <span class="pre">std::allocator&lt;cv::KeyPoint&gt;</span> <span class="pre">&gt;</span> </tt><tt class="docutils literal">&nbsp;&nbsp; </tt></p>
+<p>The keypoints.</p>
+</li>
+</ul>
+</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="index.html" title="object_recognition_capture: Data Capture"
+             >previous</a> |</li>
+    <li><a href="http://ecto.willowgarage.com/recognition">ecto.willowgarage.com/recognition</a> &raquo;</li>
+    
+        <li><a href="index.html">object_recognition_capture</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+
+    Version <a href="/commit/"></a> at <br/>
+        Copyright &copy; 2011, Ethan Rublee, Vincent Rabaud.
+
+    <br/>
+      
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

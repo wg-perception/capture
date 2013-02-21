@@ -1,0 +1,463 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>object_recognition_capture: Data Capture &mdash; object_recognition_capture</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/breathe.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="object_recognition_capture" href="#" />
+    <link rel="next" title="capture cells" href="reference.html" />
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-25500792-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<!--Extra javascript to deal with a toggle effect-->
+<script language="javascript"> 
+function toggle() {
+    var link1 = $('.toggleable_link_1'), link2 = $('.toggleable_link_2');
+    var div1 = $('.toggleable_div_1'), div2 = $('.toggleable_div_2');
+    if(link1.css("display") == "none") {
+        link1.css("display", "block");
+        div1.css("display", "block");
+        link2.css("display", "none");
+        div2.css("display", "none");
+    } else {
+        link1.css("display", "none");
+        div1.css("display", "none");
+        link2.css("display", "block");
+        div2.css("display", "block");
+    }
+} 
+</script>
+<script language="javascript"> 
+$(document).ready(function() {
+    toggle();toggle();
+});
+</script>
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="reference.html" title="capture cells"
+             accesskey="N">next</a> |</li>
+    <li><a href="http://ecto.willowgarage.com/recognition">ecto.willowgarage.com/recognition</a> &raquo;</li>
+    
+        <li><a href="#">object_recognition_capture</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">object_recognition_capture: Data Capture</a><ul>
+<li><a class="reference internal" href="#d-camera">3d Camera</a></li>
+<li><a class="reference internal" href="#setup">Setup</a><ul>
+<li><a class="reference internal" href="#dot-pattern">Dot Pattern</a></li>
+<li><a class="reference internal" href="#orb-template">ORB Template</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capture">capture</a><ul>
+<li><a class="reference internal" href="#multiple-capture-sessions">multiple capture sessions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#upload">upload</a><ul>
+<li><a class="reference internal" href="#use">use</a></li>
+<li><a class="reference internal" href="#command-line-interface">command line interface</a></li>
+<li><a class="reference internal" href="#willow-users">Willow users</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#api">API</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="reference.html"
+                        title="next chapter">capture cells</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="object-recognition-capture-data-capture">
+<h1><a class="toc-backref" href="#id2">object_recognition_capture: Data Capture</a><a class="headerlink" href="#object-recognition-capture-data-capture" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#object-recognition-capture-data-capture" id="id2">object_recognition_capture: Data Capture</a><ul>
+<li><a class="reference internal" href="#d-camera" id="id3">3d Camera</a></li>
+<li><a class="reference internal" href="#setup" id="id4">Setup</a><ul>
+<li><a class="reference internal" href="#dot-pattern" id="id5">Dot Pattern</a></li>
+<li><a class="reference internal" href="#orb-template" id="id6">ORB Template</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capture" id="id7">capture</a><ul>
+<li><a class="reference internal" href="#multiple-capture-sessions" id="id8">multiple capture sessions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#upload" id="id9">upload</a><ul>
+<li><a class="reference internal" href="#use" id="id10">use</a></li>
+<li><a class="reference internal" href="#command-line-interface" id="id11">command line interface</a></li>
+<li><a class="reference internal" href="#willow-users" id="id12">Willow users</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#api" id="id13">API</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<dl class="docutils">
+<dt>Capturing data about an object to perform object recognition requires the following:</dt>
+<dd><ul class="first last simple">
+<li>knowing where the camera is with respect to a constant world frame</li>
+<li>knowing where the object is in the captured images/scans</li>
+<li>getting enough views to cover all aspects of an object</li>
+</ul>
+</dd>
+</dl>
+<p>The third point depends on what is done with the captured data (e.g. computing a mesh
+a 3d model, templates ...) and is done by only requiring a given number of views.</p>
+<p>The first point is currently done with a textured pattern (a dot pattern or a custom one) and is described in the <a class="reference internal" href="#setup">Setup</a> section.</p>
+<p>The second point is currently done by segmenting out whatever is on top of the plane formed by the pattern.</p>
+<p><tt class="docutils literal"><span class="pre">capture</span></tt> uses the database infrastructure provided by <tt class="docutils literal"><span class="pre">object_recognition_core</span></tt> and <tt class="docutils literal"><span class="pre">object_recognition_capture</span></tt> to store the captured data.</p>
+<div class="section" id="d-camera">
+<h2><a class="toc-backref" href="#id3">3d Camera</a><a class="headerlink" href="#d-camera" title="Permalink to this headline">¶</a></h2>
+<div class="container">
+<button class="toggleable_button label_Non-ROS" onClick="javascript:toggle('Non-ROS');">Non-ROS</button><button class="toggleable_button label_Fuerte/Groovy" onClick="javascript:toggle('Fuerte/Groovy');">Fuerte/Groovy</button></div>
+<div class="container">
+<div class="toggleable_div label_Non-ROS"><p>Start your 3d sensor (Kinect, ASUS ...)</p>
+</div></div>
+<div class="container">
+<div class="toggleable_div label_Fuerte/Groovy"><p>The ROS drivers for openni are used to capture a view sparse bag of data.</p>
+<p>Before you start capturing data, please start up the ROS OpenNI driver:</p>
+<div class="highlight-sh"><div class="highlight"><pre>roslaunch openni_launch openni.launch
+</pre></div>
+</div>
+<p>It may be preferable to use the SXGA (roughly 1 megapixel) mode of your openni device if possible.</p>
+<div class="highlight-sh"><div class="highlight"><pre>rosrun dynamic_reconfigure dynparam <span class="nb">set</span> /camera/driver image_mode 1
+</pre></div>
+</div>
+</div></div>
+</div>
+<div class="section" id="setup">
+<h2><a class="toc-backref" href="#id4">Setup</a><a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
+<p>Capture is view based, and requires a fiducial that is rigidly attached to
+the object being observed.  This enables relatively accurate view point pose estimation,
+a consistent object coordinate frame, and simple object/background segmentation.
+The setup assumes that you have an RGB Depth device, such as the Kinect.</p>
+<p>We have two methods of object captures, that have roughly equivalent quality results.</p>
+<div class="section" id="dot-pattern">
+<h3><a class="toc-backref" href="#id5">Dot Pattern</a><a class="headerlink" href="#dot-pattern" title="Permalink to this headline">¶</a></h3>
+<p id="capture-board">On type of fiducial usable by object capture is the dot pattern. An svg is available here
+<a class="reference download internal" href="_downloads/capture_board_big_5x3.svg"><tt class="xref download docutils literal"><span class="pre">capture_board_big_5x3.svg</span></tt></a></p>
+<div class="figure">
+<img alt="_images/capture_board_big_5x3.svg.png" src="_images/capture_board_big_5x3.svg.png" />
+<p class="caption">The default capture board uses circle pattern based fiducial markers,
+one black on white, the other inverted, so that two may be detected in
+the scene and allow for pose estimation in the presence of occlusion
+of one of the markers.</p>
+</div>
+<p>Get a full size printing of the above fiducial marker and mount it to flat surface,
+possibly on a lazy susan. <a class="reference external" href="http://en.wikipedia.org/wiki/Lazy_Susan">http://en.wikipedia.org/wiki/Lazy_Susan</a></p>
+</div>
+<div class="section" id="orb-template">
+<h3><a class="toc-backref" href="#id6">ORB Template</a><a class="headerlink" href="#orb-template" title="Permalink to this headline">¶</a></h3>
+<div class="figure" id="id1">
+<img alt="_images/orb_template.jpg" src="_images/orb_template.jpg" />
+<p class="caption">Once a canonical frame, or &#8220;template&#8221; is captured of a textured planar surface, it may
+be used as if it were a fiducial, giving a pose and segmentation prior.</p>
+</div>
+<p>If you are not inclined to print something out, you may use any highly textured planar surface.
+This involves capturing a connonical view of said surface, and then it may be used to establish an
+object coordinate system, and perform segmentation.</p>
+<p>First capture an ORB template of your capture workspace. It should be taken from a planar frontal view, and the center
+of the image should be filled by the plane. Press &#8216;s&#8217; to save an image. The result will be placed in the directory
+given, e.g. my_textured_plane. Press &#8216;q&#8217; to quit the template capture program.</p>
+<div class="container">
+<button class="toggleable_button label_Non-ROS" onClick="javascript:toggle('Non-ROS');">Non-ROS</button><button class="toggleable_button label_ROS" onClick="javascript:toggle('ROS');">ROS</button></div>
+<div class="container">
+<div class="toggleable_div label_Non-ROS"><div class="highlight-sh"><div class="highlight"><pre>./apps/orb_template -o my_textured_plane
+</pre></div>
+</div>
+</div></div>
+<div class="container">
+<div class="toggleable_div label_ROS"><div class="highlight-sh"><div class="highlight"><pre>rosrun object_recognition_capture orb_template -o my_textured_plane
+</pre></div>
+</div>
+</div></div>
+<p>Try out tracking to see if you got a good template. Press &#8216;q&#8217; to quit.</p>
+<div class="container">
+<button class="toggleable_button label_Non-ROS" onClick="javascript:toggle('Non-ROS');">Non-ROS</button><button class="toggleable_button label_ROS" onClick="javascript:toggle('ROS');">ROS</button></div>
+<div class="container">
+<div class="toggleable_div label_Non-ROS"><div class="highlight-sh"><div class="highlight"><pre>./apps/orb_track --track_directory my_textured_plane
+</pre></div>
+</div>
+</div></div>
+<div class="container">
+<div class="toggleable_div label_ROS"><div class="highlight-sh"><div class="highlight"><pre>rosrun object_recognition_capture orb_track --track_directory my_textured_plane
+</pre></div>
+</div>
+</div></div>
+</div>
+</div>
+<div class="section" id="capture">
+<h2><a class="toc-backref" href="#id7">capture</a><a class="headerlink" href="#capture" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">capture</span></tt> is the entry point for using the our object capture system.
+The capture program will estimate a pose per view, along with a depth based mask.
+This will result in a ROS bag of data that has the following topics:</p>
+<div class="highlight-python"><pre>types:       geometry_msgs/PoseStamped [d3812c3cbc69362b77dc0b19b345f8f5]
+             sensor_msgs/CameraInfo    [c9a58c1b0b154e0e6da7578cb991d214]
+             sensor_msgs/Image         [060021388200f6f0f447d0fcd9c64743]
+topics:      /camera/depth/camera_info   72 msgs    : sensor_msgs/CameraInfo
+             /camera/depth/image         72 msgs    : sensor_msgs/Image
+             /camera/mask                72 msgs    : sensor_msgs/Image
+             /camera/pose                72 msgs    : geometry_msgs/PoseStamped
+             /camera/rgb/camera_info     72 msgs    : sensor_msgs/CameraInfo
+             /camera/rgb/image_color     72 msgs    : sensor_msgs/Image</pre>
+</div>
+<p>To use <tt class="docutils literal"><span class="pre">capture</span></tt> you should place your object in the center of the fiducial board, and keep it in the same location
+for the entirety of the capture session. Slowly turn the fiducial board, and the program should capture views that are
+evenly distributed in a view pose sphere.</p>
+<p>Run the capture program in preview mode and make sure the mask and pose are being picked up.</p>
+<div class="container">
+<button class="toggleable_button label_Non-ROS" onClick="javascript:toggle('Non-ROS');">Non-ROS</button><button class="toggleable_button label_ROS" onClick="javascript:toggle('ROS');">ROS</button></div>
+<p>If you don&#8217;t have a pattern and use the dot pattern, ommit the <tt class="docutils literal"><span class="pre">-i</span></tt> option below:</p>
+<div class="container">
+<div class="toggleable_div label_Non-ROS"><div class="highlight-sh"><div class="highlight"><pre>./apps/capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag --preview
+</pre></div>
+</div>
+</div></div>
+<div class="container">
+<div class="toggleable_div label_ROS"><div class="highlight-sh"><div class="highlight"><pre>rosrun object_recognition_capture capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag --preview
+</pre></div>
+</div>
+</div></div>
+<p>You should see an popup image similar to the following:</p>
+<div class="figure">
+<img alt="_images/capture.gif" src="_images/capture.gif" />
+<p class="caption">A sample sequence of view captured using an opposing dot pattern fudicial marker.</p>
+</div>
+<p>When satisified by the preview mode, run it for real.  The following will capture a bag of 60 views
+where each view is normally distributed on the view sphere. The mask and pose displays should only refresh
+when a novel view is captured.  The program will finish when 35 (-n) views are captured.
+Press &#8216;q&#8217; to quit early.</p>
+<div class="container">
+<button class="toggleable_button label_Non-ROS" onClick="javascript:toggle('Non-ROS');">Non-ROS</button><button class="toggleable_button label_ROS" onClick="javascript:toggle('ROS');">ROS</button></div>
+<div class="container">
+<div class="toggleable_div label_Non-ROS"><div class="highlight-sh"><div class="highlight"><pre>./apps/capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag
+</pre></div>
+</div>
+</div></div>
+<div class="container">
+<div class="toggleable_div label_ROS"><div class="highlight-sh"><div class="highlight"><pre>rosrun object_recognition_capture capture -i my_textured_plane --seg_z_min 0.01 -o silk.bag
+</pre></div>
+</div>
+</div></div>
+<p>Remember to query the program for help if you are lost:</p>
+<div class="highlight-text"><div class="highlight"><pre>usage: capture [-h] [-o BAG_FILE] [-a RADIANS] [-n NVIEWS] [--preview]
+               [-i,--input INPUT] [-m,--matches] [--fps FPS] [--res RES]
+               [--seg_radius_crop SEG_RADIUS_CROP] [--seg_z_crop SEG_Z_CROP]
+               [--seg_z_min SEG_Z_MIN] [--niter ITERATIONS] [--shell] [--gui]
+               [--logfile LOGFILE] [--graphviz] [--dotfile DOTFILE] [--stats]
+
+Captures data appropriate for training object recognition pipelines.
+Assumes that there is a known fiducial in the scene, and captures views of the 
+object sparsely, depending on the angle_thresh setting.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -o BAG_FILE, --output BAG_FILE
+                        A bagfile to write to.
+  -a RADIANS, --angle_thresh RADIANS
+                        The delta angular threshold in pose.Frames will not be
+                        recorded unless they are not closer to any other pose
+                        by this amount. default(0.174532925199)
+  -n NVIEWS, --nviews NVIEWS
+                        Number of desired views. default(36)
+  --preview             Preview the pose estimator.
+  -i,--input INPUT      The directory of the template to use. If empty, it
+                        uses the opposite dot pattern
+  -m,--matches          Visualize the matches.
+
+camera:
+  --fps FPS             The temporal resolution of the captured data
+  --res RES             The image resolution of the captured data.
+
+seg options:
+  --seg_radius_crop SEG_RADIUS_CROP
+                        The amount to keep in the x direction (meters)
+                        relative to the coordinate frame defined by the pose.
+                        ~ (default: 0.20000000298)
+  --seg_z_crop SEG_Z_CROP
+                        The amount to keep in the z direction (meters)
+                        relative to the coordinate frame defined by the pose.
+                        ~ (default: 0.5)
+  --seg_z_min SEG_Z_MIN
+                        The amount to crop above the plane, in meters. ~
+                        (default: 0.00749999983236
+</pre></div>
+</div>
+<div class="section" id="multiple-capture-sessions">
+<h3><a class="toc-backref" href="#id8">multiple capture sessions</a><a class="headerlink" href="#multiple-capture-sessions" title="Permalink to this headline">¶</a></h3>
+<p>If you decided to take multiple bags of an object, from different view points,
+please concatenate the bags before upload. However, if you moved the object on the board, then you should consider
+these bags as seperate &#8220;sessions&#8221; of the same object.</p>
+<p>There is a convenience script for this called <tt class="docutils literal"><span class="pre">concat.py</span></tt></p>
+<div class="highlight-text"><div class="highlight"><pre>Usage: concat.py OUTPUT INPUT1 [INPUT2 ...]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="upload">
+<h2><a class="toc-backref" href="#id9">upload</a><a class="headerlink" href="#upload" title="Permalink to this headline">¶</a></h2>
+<p>Once you have captured a bag of views, you will want to upload the bag to the database.  This upload will contain all
+of the views in the bag, plus some meta information about the object. It assumed that each bag has one object,
+and this object has a consistent coordinate frame throughout the bag.</p>
+<div class="section" id="use">
+<h3><a class="toc-backref" href="#id10">use</a><a class="headerlink" href="#use" title="Permalink to this headline">¶</a></h3>
+<p>A typical command line session will look like:</p>
+<div class="highlight-python"><pre>% apps/upload -a 'Ethan Rublee' -e 'erublee@willowgarage.com' -i silk.bag -n 'silk' -d 'A carton of Silk brand soy milk.' --commit milk, soy, kitchen, tod
+Uploaded session with id: 4ad9f2d3db57bbd414e5e987773490a0</pre>
+</div>
+<p>If you leave off the <tt class="docutils literal"><span class="pre">--commit</span></tt> the script will run without actually committing anything to
+the database.</p>
+<p>Now that the bag is uploaded, into the database, you can see it in the db by browsing to:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://localhost:5984/_utils/database.html?object_recognition/_design/objects/_view/by_object_name">http://localhost:5984/_utils/database.html?object_recognition/_design/objects/_view/by_object_name</a></li>
+</ul>
+</div>
+<div class="section" id="command-line-interface">
+<h3><a class="toc-backref" href="#id11">command line interface</a><a class="headerlink" href="#command-line-interface" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-text"><div class="highlight"><pre>usage: upload [-h] [-i BAG_FILE] [-n OBJECT_NAME] [-d DESCRIPTION]
+              [-a AUTHOR_NAME] [-e EMAIL_ADDRESS] [--visualize]
+              [--db_type DB_TYPE] [--db_root DB_ROOT_URL]
+              [--db_collection DB_COLLECTION] [--commit] [--niter ITERATIONS]
+              [--shell] [--gui] [--logfile LOGFILE] [--graphviz]
+              [--dotfile DOTFILE] [--stats]
+              TAGS [TAGS ...]
+
+Uploads a bag, with an object description to the db.
+
+positional arguments:
+  TAGS                  Tags to add to object description.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -i BAG_FILE, --input BAG_FILE
+                        A bag file to upload.
+  -n OBJECT_NAME, --object_name OBJECT_NAME
+  -d DESCRIPTION, --description DESCRIPTION
+  -a AUTHOR_NAME, --author AUTHOR_NAME
+  -e EMAIL_ADDRESS, --email EMAIL_ADDRESS
+  --visualize           Turn on visualization
+
+Database Parameters:
+  --db_type DB_TYPE     The type of database used: one of [CouchDB]. Default:
+                        CouchDB
+  --db_root DB_ROOT_URL
+                        The database root URL to connect to. Default:
+                        http://localhost:5984
+  --db_collection DB_COLLECTION
+                        The database root URL to connect to. Default:
+                        object_recognition
+  --commit              Commit the data to the database
+</pre></div>
+</div>
+</div>
+<div class="section" id="willow-users">
+<h3><a class="toc-backref" href="#id12">Willow users</a><a class="headerlink" href="#willow-users" title="Permalink to this headline">¶</a></h3>
+<p>Some pre-acquired bags exist internally for now, just rsync them:</p>
+<div class="highlight-sh"><div class="highlight"><pre>rsync -vPa /wg/wgss0_shelf1/object_recognition_capture ./
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="api">
+<h2><a class="toc-backref" href="#id13">API</a><a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<p>To consult the API for the capture cells, please refer to:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">capture cells</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="reference.html" title="capture cells"
+             >next</a> |</li>
+    <li><a href="http://ecto.willowgarage.com/recognition">ecto.willowgarage.com/recognition</a> &raquo;</li>
+    
+        <li><a href="#">object_recognition_capture</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+
+    Version <a href="/commit/"></a> at <br/>
+        Copyright &copy; 2011, Ethan Rublee, Vincent Rabaud.
+
+    <br/>
+      
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
