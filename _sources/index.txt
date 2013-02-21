@@ -1,3 +1,5 @@
+.. _ork_capture:
+
 object_recognition_capture: Data Capture
 ========================================
 
