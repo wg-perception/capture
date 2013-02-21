@@ -56,4 +56,4 @@ install(DIRECTORY apps/capture_board apps/bagscripts
         USE_SOURCE_PERMISSIONS
 )
 
-#catkin_sphinx(${CMAKE_CURRENT_SOURCE_DIR}/doc doc)
+ecto_sphinx(${CMAKE_CURRENT_SOURCE_DIR}/doc/source)

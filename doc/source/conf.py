@@ -40,7 +40,7 @@ extensions += [
               'ecto.sphinx.EctoPlotDirective',
               'ecto.sphinx.EctoCellDirective',
               'ecto.sphinx.EctoModuleDirective',
-              'ecto.sphinx.toggle',
+              'ecto.sphinx.ToggleDirective',
               ]
 
 # Add any paths that contain templates here, relative to this directory.
