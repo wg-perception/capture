@@ -91,7 +91,8 @@ class OrbPoseEstimator(ecto.BlackBox):
         p.declare('show_matches', 'Display the matches.', False)
         p.declare('use_lsh', 'Use lsh for matching instead of brute force.', True)
 
-    def declare_forwards(self, _p):
+    @staticmethod
+    def declare_forwards(_p):
         #inputs
         p = {'lsh': 'all', 'orb': 'all', 'pose_estimation': 'all'}
         i = {}

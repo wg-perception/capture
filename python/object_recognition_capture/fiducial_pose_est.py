@@ -6,7 +6,8 @@ class OpposingDotPoseEstimator(ecto.BlackBox):
     '''Estimates the pose of a fiducial that has a black on white pattern and a white on black pattern.
     TODO support other configurations...
     '''
-    def declare_cells(self, p):
+    @staticmethod
+    def declare_cells(p):
         #TODO parameterize the quantizer
         #abuse saturated Arithmetics http://opencv.itseez.com/modules/core/doc/intro.html?highlight=saturated.
         cells = {'gray_image': ecto.Passthrough('gray Input'),
@@ -42,14 +43,16 @@ class OpposingDotPoseEstimator(ecto.BlackBox):
 
         return cells
  
-    def declare_direct_params(self, p):
+    @staticmethod
+    def declare_direct_params(p):
         p.declare('rows', 'Number of rows in the pattern.', 11)
         p.declare('cols', 'Number of cols in the pattern.', 7)
         p.declare('pattern_type', 'Type of pattern', calib.ASYMMETRIC_CIRCLES_GRID)
         p.declare('square_size', 'The pattern spacing', 0.1)
         p.declare('debug', 'Debug the detector.', True)
 
-    def declare_forwards(self, _p):
+    @staticmethod
+    def declare_forwards(_p):
         #inputs
         i = {'gray_image': [Forward('in','image')],
              'rgb_image': [Forward('in','color_image')],
