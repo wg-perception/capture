@@ -62,7 +62,7 @@ Dot Pattern
 .. _capture_board:
 
 On type of fiducial usable by object capture is the dot pattern. An svg is available here
-:download:`capture_board_big_5x3.svg`
+:download:`capture_board_big_5x3.svg` and a pdf for printing here :download:`capture_board_big_5x3.svg.pdf`
 
 .. figure:: capture_board_big_5x3.svg.png
 
@@ -197,7 +197,7 @@ Press 'q' to quit early.
 
 Remember to query the program for help if you are lost:
 
-.. program-output:: apps/capture --help
+.. program-output:: ../../apps/capture --help
    :in_srcdir:
    :until: Scheduler Options:
 
@@ -209,7 +209,7 @@ these bags as seperate "sessions" of the same object.
 
 There is a convenience script for this called ``concat.py``
 
-.. program-output:: apps/bagscripts/concat.py --help
+.. program-output:: ../../apps/bagscripts/concat.py --help
     :in_srcdir:
 
 upload
@@ -234,7 +234,7 @@ Now that the bag is uploaded, into the database, you can see it in the db by bro
 
 command line interface
 ++++++++++++++++++++++
-.. program-output:: apps/upload --help
+.. program-output:: ../../apps/upload --help
    :in_srcdir:
    :until: Scheduler Options:
 
