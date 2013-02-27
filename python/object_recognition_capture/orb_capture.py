@@ -51,7 +51,7 @@ class TemplateLoader(ecto.BlackBox):
                 'descriptors': BlackBoxCellInfo(MatReader, {'filename': '%s/descriptors.yaml' % p.directory}),
                 'R': BlackBoxCellInfo(MatReader, {'filename': '%s/R.yaml' % p.directory}),
                 'T': BlackBoxCellInfo(MatReader, {'filename': '%s/T.yaml' % p.directory}),
-                'image': BlackBoxCellInfo(imread, {'image_file=': '%s/train.png' % p.directory})}
+                'image': BlackBoxCellInfo(imread, {'image_file': '%s/train.png' % p.directory})}
 
     @classmethod
     def declare_direct_params(cls, p):
