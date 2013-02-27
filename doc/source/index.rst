@@ -62,7 +62,7 @@ Dot Pattern
 .. _capture_board:
 
 On type of fiducial usable by object capture is the dot pattern. An svg is available here
-:download:`capture_board_big_5x3.svg`
+:download:`capture_board_big_5x3.svg` and a pdf for printing here :download:`capture_board_big_5x3.svg.pdf`.
 
 .. figure:: capture_board_big_5x3.svg.png
 
