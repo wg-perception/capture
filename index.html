@@ -221,7 +221,7 @@ The setup assumes that you have an RGB Depth device, such as the Kinect.</p>
 <div class="section" id="dot-pattern">
 <h3><a class="toc-backref" href="#id5">Dot Pattern</a><a class="headerlink" href="#dot-pattern" title="Permalink to this headline">¶</a></h3>
 <p id="capture-board">On type of fiducial usable by object capture is the dot pattern. An svg is available here
-<a class="reference download internal" href="_downloads/capture_board_big_5x3.svg"><tt class="xref download docutils literal"><span class="pre">capture_board_big_5x3.svg</span></tt></a> and a pdf for printing here <a class="reference download internal" href="_downloads/capture_board_big_5x3.svg.pdf"><tt class="xref download docutils literal"><span class="pre">capture_board_big_5x3.svg.pdf</span></tt></a></p>
+<a class="reference download internal" href="_downloads/capture_board_big_5x3.svg"><tt class="xref download docutils literal"><span class="pre">capture_board_big_5x3.svg</span></tt></a> and a pdf for printing here <a class="reference download internal" href="_downloads/capture_board_big_5x3.svg.pdf"><tt class="xref download docutils literal"><span class="pre">capture_board_big_5x3.svg.pdf</span></tt></a>.</p>
 <div class="figure">
 <img alt="_images/capture_board_big_5x3.svg.png" src="_images/capture_board_big_5x3.svg.png" />
 <p class="caption">The default capture board uses circle pattern based fiducial markers,
@@ -394,7 +394,8 @@ topics:      /camera/depth/camera_info   72 msgs    : sensor_msgs/CameraInfo
 <p>To use <tt class="docutils literal"><span class="pre">capture</span></tt> you should place your object in the center of the fiducial board, and keep it in the same location
 for the entirety of the capture session. Slowly turn the fiducial board, and the program should capture views that are
 evenly distributed in a view pose sphere.</p>
-<p>Run the capture program in preview mode and make sure the mask and pose are being picked up.</p>
+<p>Run the capture program in preview mode and make sure the pose of the pattern is displayed and the mask of the object
+non-empty (it should display the initial image by replacing anything but the object with black).</p>
 <div class="container">
 <button class="toggleable_button label_Non-ROS" onclick="
 function toggle(label) {
@@ -467,7 +468,7 @@ $(document).ready(function() {
 </div>
 <p>When satisified by the preview mode, run it for real.  The following will capture a bag of 60 views
 where each view is normally distributed on the view sphere. The mask and pose displays should only refresh
-when a novel view is captured.  The program will finish when 35 (-n) views are captured.
+when a novel view is captured.  The program will finish when 36 (-n) views are captured.
 Press &#8216;q&#8217; to quit early.</p>
 <div class="container">
 <button class="toggleable_button label_Non-ROS" onclick="
