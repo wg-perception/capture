@@ -16,10 +16,12 @@
   <build_depends>ecto_opencv</build_depends>
   <build_depends>ecto_openni</build_depends>
   <build_depends>object_recognition_core</build_depends>
+
   <depends>boost</depends>
   <depends>ecto</depends>
   <depends>ecto_image_pipeline</depends>
   <depends>ecto_opencv</depends>
   <depends>ecto_openni</depends>
+  <depends>ecto_ros</depends>
   <depends>object_recognition_core</depends>
 </stack>
