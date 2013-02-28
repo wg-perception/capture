@@ -148,7 +148,8 @@ To use ``capture`` you should place your object in the center of the fiducial bo
 for the entirety of the capture session. Slowly turn the fiducial board, and the program should capture views that are
 evenly distributed in a view pose sphere.
 
-Run the capture program in preview mode and make sure the mask and pose are being picked up.
+Run the capture program in preview mode and make sure the pose of the pattern is displayed and the mask of the object
+non-empty (it should display the initial image by replacing anything but the object with black).
 
 .. toggle_table::
     :arg1: Non-ROS
@@ -176,7 +177,7 @@ You should see an popup image similar to the following:
 
 When satisified by the preview mode, run it for real.  The following will capture a bag of 60 views
 where each view is normally distributed on the view sphere. The mask and pose displays should only refresh
-when a novel view is captured.  The program will finish when 35 (-n) views are captured.
+when a novel view is captured.  The program will finish when 36 (-n) views are captured.
 Press 'q' to quit early.
 
 .. toggle_table::
