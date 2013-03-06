@@ -37,6 +37,21 @@
 
 #include <opencv2/core/core.hpp>
 
+/** Returns a value that is for sure in [min, max[
+ * @param min
+ * @param max
+ * @param val
+ * @return
+ */
+int filterMinMax(int min, int max, int val) {
+  if (val < min)
+    return min;
+  else if (val >= max)
+    return max - 1;
+  else
+    return val;
+}
+
 /**
  * If the equation of the plane is ax+by+cz+d=0, the pose (R,t) is such that it takes the horizontal plane (z=0)
  * to the current equation
@@ -119,10 +134,13 @@ struct PlaneFilter
 
     // Go over the plane masks and simply count the occurrence of each mask
     std::vector<int> occurrences(256, 0);
-    for(int y = std::max(0, origin.y - *window_size_); y < std::min(masks_->rows, origin.y + *window_size_); ++y) {
-      uchar *mask = masks_->ptr<uchar>(y) + std::max(0, origin.x - *window_size_);
-      uchar *mask_end = masks_->ptr<uchar>(y) + std::min(masks_->cols, origin.x + *window_size_);
-      for(; mask != mask_end; ++mask)
+    for (int y = filterMinMax(0, masks_->rows, origin.y - *window_size_);
+        y < filterMinMax(0, masks_->rows, origin.y + *window_size_); ++y) {
+      const uchar *mask = masks_->ptr<uchar>(y)
+          + filterMinMax(0, masks_->cols, origin.x - *window_size_);
+      const uchar *mask_end = masks_->ptr<uchar>(y)
+          + filterMinMax(0, masks_->cols, origin.y + *window_size_);
+      for (; mask != mask_end; ++mask)
         if (*mask != 255)
           ++occurrences[*mask];
     }
