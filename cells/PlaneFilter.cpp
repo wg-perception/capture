@@ -96,6 +96,8 @@ struct PlaneFilter
   int
   process(const ecto::tendrils& inputs, const ecto::tendrils& outputs)
   {
+    *found_ = false;
+
     // Get the origin of the plane
     cv::Point origin;
 
@@ -104,15 +106,15 @@ struct PlaneFilter
     if (*do_center_)
       origin = cv::Point(masks_->cols/2, masks_->rows/2);
     else {
-      if (!K_ || K_->empty() || !R_in_ || R_in_->empty() || !T_in_ || T_in_->empty()) {
-        *found_ = false;
+      if (!K_ || K_->empty() || !R_in_ || R_in_->empty() || !T_in_ || T_in_->empty())
         return ecto::OK;
-      }
+      T = *T_in_;
+      if (cvIsNaN(T(0)))
+        return ecto::OK;
       K = *K_;
       R = *R_in_;
-      T = *T_in_;
-      cv::Vec3f T = K*T;
-      origin = cv::Point(T(0)/T(2), T(1)/T(2));
+      cv::Vec3f T_tmp = K*T;
+      origin = cv::Point(T_tmp(0)/T_tmp(2), T_tmp(1)/T_tmp(2));
     }
 
     // Go over the plane masks and simply count the occurrence of each mask
@@ -135,61 +137,64 @@ struct PlaneFilter
       }
     }
 
+    if (best_index < 0)
+      return ecto::OK;
+
     // Convert the plane coefficients to R,t
     cv::Matx33f rotation;
     cv::Vec3f translation;
-    if (best_index >= 0) {
-      *coeffs_ = (*planes_)[best_index];
-      float a = (*coeffs_)[0], b = (*coeffs_)[1], c = (*coeffs_)[2], d = (*coeffs_)[3];
+    *coeffs_ = (*planes_)[best_index];
+    float a = (*coeffs_)[0], b = (*coeffs_)[1], c = (*coeffs_)[2], d =
+        (*coeffs_)[3];
 
-      // Deal with translation
-      if (*do_center_) {
-        getPlaneTransform(*coeffs_, rotation, translation);
-        // Make sure T_ points to the center of the image
-        translation = cv::Vec3f(0,0,-d/c);
-      } else {
-        // Have T_ point to the origin. Find alpha such that alpha*Kinv*origin is on the plane
-        cv::Matx33f K_inv = K.inv();
-        cv::Vec3f origin_inv = cv::Mat(K_inv * cv::Vec3f(origin.x, origin.y, 1));
-        float alpha = -d/(a*origin_inv(0) + b*origin_inv(1) + c*origin_inv(2));
-        translation = alpha*origin_inv;
-        if (translation(2) < 0)
-          translation = -translation;
+    // Deal with translation
+    if (*do_center_) {
+      getPlaneTransform(*coeffs_, rotation, translation);
+      // Make sure T_ points to the center of the image
+      translation = cv::Vec3f(0, 0, -d / c);
+    } else {
+      // Have T_ point to the origin. Find alpha such that alpha*Kinv*origin is on the plane
+      cv::Matx33f K_inv = K.inv();
+      cv::Vec3f origin_inv = cv::Mat(K_inv * cv::Vec3f(origin.x, origin.y, 1));
+      float alpha = -d
+          / (a * origin_inv(0) + b * origin_inv(1) + c * origin_inv(2));
+      translation = alpha * origin_inv;
+      if (translation(2) < 0)
+        translation = -translation;
 
-        // Make the rotation fit to the plane (but as close as possible to the current estimate
-        // Get the Z axis
-        cv::Vec3f N(a, b, c);
-        N = N/cv::norm(N);
-        // Get the X, Y axes
-        cv::Vec3f vecX(R(0,0), R(1,0), R(2,0));
-        cv::Vec3f vecY(R(0,1), R(1,1), R(2,1));
-        // Project them onto the plane
-        vecX = vecX - vecX.dot(N)*N;
-        vecY = vecY - vecY.dot(N)*N;
-        vecX = vecX/cv::norm(vecX);
-        vecY = vecY/cv::norm(vecY);
-        // Get the median
-        cv::Vec3f median = vecX + vecY;
-        median = median/cv::norm(median);
-        // Get a new basis
-        cv::Vec3f vecYtmp = vecY - median.dot(vecY)*median;
-        cv::Vec3f vecXtmp = vecX - median.dot(vecX)*median;
-        vecYtmp = vecYtmp/cv::norm(vecYtmp);
-        vecXtmp = vecXtmp/cv::norm(vecXtmp);
-        // Get the rectified X/Y axes
-        cv::Vec3f vecXnew = median + vecXtmp;
-        cv::Vec3f vecYnew = median + vecYtmp;
-        vecXnew = vecXnew/cv::norm(vecXnew);
-        vecYnew = vecYnew/cv::norm(vecYnew);
-        // Fill in the matrix
-        rotation = cv::Matx33f(vecXnew(0), vecYnew(0), N(0), vecXnew(1), vecYnew(1), N(1), vecXnew(2), vecYnew(2), N(2));
-      }
+      // Make the rotation fit to the plane (but as close as possible to the current estimate
+      // Get the Z axis
+      cv::Vec3f N(a, b, c);
+      N = N / cv::norm(N);
+      // Get the X, Y axes
+      cv::Vec3f vecX(R(0, 0), R(1, 0), R(2, 0));
+      cv::Vec3f vecY(R(0, 1), R(1, 1), R(2, 1));
+      // Project them onto the plane
+      vecX = vecX - vecX.dot(N) * N;
+      vecY = vecY - vecY.dot(N) * N;
+      vecX = vecX / cv::norm(vecX);
+      vecY = vecY / cv::norm(vecY);
+      // Get the median
+      cv::Vec3f median = vecX + vecY;
+      median = median / cv::norm(median);
+      // Get a new basis
+      cv::Vec3f vecYtmp = vecY - median.dot(vecY) * median;
+      cv::Vec3f vecXtmp = vecX - median.dot(vecX) * median;
+      vecYtmp = vecYtmp / cv::norm(vecYtmp);
+      vecXtmp = vecXtmp / cv::norm(vecXtmp);
+      // Get the rectified X/Y axes
+      cv::Vec3f vecXnew = median + vecXtmp;
+      cv::Vec3f vecYnew = median + vecYtmp;
+      vecXnew = vecXnew / cv::norm(vecXnew);
+      vecYnew = vecYnew / cv::norm(vecYnew);
+      // Fill in the matrix
+      rotation = cv::Matx33f(vecXnew(0), vecYnew(0), N(0), vecXnew(1),
+                             vecYnew(1), N(1), vecXnew(2), vecYnew(2), N(2));
+    }
 
-      *R_out_ = cv::Mat(rotation);
-      *T_out_ = cv::Mat(translation);
-      *found_ = true;
-    } else
-      *found_ = false;
+    *R_out_ = cv::Mat(rotation);
+    *T_out_ = cv::Mat(translation);
+    *found_ = true;
 
     return ecto::OK;
   }
