@@ -139,7 +139,7 @@ struct PlaneFilter
       const uchar *mask = masks_->ptr<uchar>(y)
           + filterMinMax(0, masks_->cols, origin.x - *window_size_);
       const uchar *mask_end = masks_->ptr<uchar>(y)
-          + filterMinMax(0, masks_->cols, origin.y + *window_size_);
+          + filterMinMax(0, masks_->cols, origin.x + *window_size_);
       for (; mask != mask_end; ++mask)
         if (*mask != 255)
           ++occurrences[*mask];
