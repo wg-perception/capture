@@ -112,6 +112,8 @@ struct PlaneFilter
   process(const ecto::tendrils& inputs, const ecto::tendrils& outputs)
   {
     *found_ = false;
+    *R_out_ = cv::Mat();
+    *T_out_ = cv::Mat();
 
     // Get the origin of the plane
     cv::Point origin;
