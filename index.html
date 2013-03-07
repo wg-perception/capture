@@ -396,7 +396,9 @@ topics:      /camera/depth/camera_info   72 msgs    : sensor_msgs/CameraInfo
 for the entirety of the capture session. Slowly turn the fiducial board, and the program should capture views that are
 evenly distributed in a view pose sphere.</p>
 <p>Run the capture program in preview mode and make sure the pose of the pattern is displayed and the mask of the object
-non-empty (it should display the initial image by replacing anything but the object with black).</p>
+non-empty (it should display the initial image by replacing anything but the object with black). The mask represents
+everything that is in a cylinder centered at the pose object and with dimensions specified through the command line.
+This is what clusters the object out and that is fed for training.</p>
 <div class="container">
 <button class="toggleable_button label_Non-ROS" onclick="
 function toggle(label) {
