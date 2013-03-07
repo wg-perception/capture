@@ -151,7 +151,9 @@ for the entirety of the capture session. Slowly turn the fiducial board, and the
 evenly distributed in a view pose sphere.
 
 Run the capture program in preview mode and make sure the pose of the pattern is displayed and the mask of the object
-non-empty (it should display the initial image by replacing anything but the object with black).
+non-empty (it should display the initial image by replacing anything but the object with black). The mask represents
+everything that is in a cylinder centered at the pose object and with dimensions specified through the command line.
+This is what clusters the object out and that is fed for training.
 
 .. toggle_table::
     :arg1: Non-ROS
