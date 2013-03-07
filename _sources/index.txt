@@ -26,13 +26,13 @@ to store the captured data.
 
 .. toggle_table::
     :arg1: Non-ROS
-    :arg2: Fuerte/Groovy
+    :arg2: Fuerte Groovy
 
 .. toggle:: Non-ROS
 
     Start your 3d sensor (Kinect, ASUS ...)
 
-.. toggle:: Fuerte/Groovy
+.. toggle:: Fuerte Groovy
 
     The ROS drivers for openni are used to capture a view sparse bag of data.
 
