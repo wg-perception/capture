@@ -171,14 +171,14 @@ $(document).ready(function() {
   });
 });
 </script>
-<button class="toggleable_button label_FuerteGroovy" onclick="
+<button class="toggleable_button label_ROS" onclick="
 function toggle(label) {
   $('.toggleable_button').css({border: '2px outset', 'border-radius': '4px'});
   $('.toggleable_button.label_' + label).css({border: '2px inset', 'border-radius': '4px'});
   $('.toggleable_div').css('display', 'none');
   $('.toggleable_div.label_' + label).css('display', 'block');
 };
-toggle('FuerteGroovy')">Fuerte Groovy</button>
+toggle('ROS')">ROS</button>
 <script>
 
 function toggle(label) {
@@ -202,7 +202,7 @@ $(document).ready(function() {
 <div class="toggleable_div label_Non-ROS"><p>Start your 3d sensor (Kinect, ASUS ...)</p>
 </div></div>
 <div class="container">
-<div class="toggleable_div label_FuerteGroovy"><p>The ROS drivers for openni are used to capture a view sparse bag of data.</p>
+<div class="toggleable_div label_ROS"><p>The ROS drivers for openni are used to capture a view sparse bag of data.</p>
 <p>Before you start capturing data, please start up the ROS OpenNI driver:</p>
 <div class="highlight-sh"><div class="highlight"><pre>roslaunch openni_launch openni.launch
 </pre></div>
