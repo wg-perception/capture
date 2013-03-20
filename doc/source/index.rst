@@ -34,19 +34,7 @@ to store the captured data.
 
 .. toggle:: ROS
 
-    The ROS drivers for openni are used to capture a view sparse bag of data.
-
-    Before you start capturing data, please start up the ROS OpenNI driver:
-
-    .. code-block:: sh
-
-       roslaunch openni_launch openni.launch 
-
-    It may be preferable to use the SXGA (roughly 1 megapixel) mode of your openni device if possible.  
-
-    .. code-block:: sh
-
-       rosrun dynamic_reconfigure dynparam set /camera/driver image_mode 1
+    The standard openni drivers are used (not the ROS topics), so you just need to plug in your 3d camera.
 
 Setup
 *****
