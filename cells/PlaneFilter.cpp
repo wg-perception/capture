@@ -44,6 +44,8 @@
  * @return
  */
 int filterMinMax(int min, int max, int val) {
+  if (max <= min)
+    throw std::runtime_error("Max inferior to Min in filterMinMax");
   if (val < min)
     return min;
   else if (val >= max)
