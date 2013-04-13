@@ -34,19 +34,7 @@ to store the captured data.
 
 .. toggle:: ROS
 
-    The ROS drivers for openni are used to capture a view sparse bag of data.
-
-    Before you start capturing data, please start up the ROS OpenNI driver:
-
-    .. code-block:: sh
-
-       roslaunch openni_launch openni.launch 
-
-    It may be preferable to use the SXGA (roughly 1 megapixel) mode of your openni device if possible.  
-
-    .. code-block:: sh
-
-       rosrun dynamic_reconfigure dynparam set /camera/driver image_mode 1
+    The standard openni drivers are used (not the ROS topics), so you just need to plug in your 3d camera.
 
 Setup
 *****
@@ -54,22 +42,21 @@ Capture is view based, and requires a fiducial that is rigidly attached to the o
 relatively accurate view point pose estimation, a consistent object coordinate frame, and simple object/background
 segmentation. The setup assumes that you have an RGB Depth device, such as the Kinect.
 
-We have two methods of object captures, that have roughly equivalent quality results.
+We have two methods of object captures, that have roughly equivalent quality results: a dot pattern and a generic
+pattern (which is useful if you cannot print the dot pattern)
 
 
-Dot Pattern
-===========
+.. rubric:: Dot Pattern
 
 .. _capture_board:
 
-On type of fiducial usable by object capture is the dot pattern. An svg is available here
+One type of fiducial usable by object capture is the dot pattern. An svg is available here
 :download:`capture_board_big_5x3.svg` and a pdf for printing here :download:`capture_board_big_5x3.svg.pdf`.
 
 .. figure:: capture_board_big_5x3.svg.png
 
-  The default capture board uses circle pattern based fiducial markers, one black on white, the other inverted, so
-  that two may be detected in the scene and allow for pose estimation in the presence of occlusion of one of the
-  markers.
+The dot pattern has two sets of fiducial markers: one black on white, the other inverted, so that two may be detected
+in the scene and allow for pose estimation in the presence of occlusion of one of the markers.
 
 Get a full size printing of the above fiducial marker and mount it to flat surface, possibly on a lazy susan.
 http://en.wikipedia.org/wiki/Lazy_Susan
@@ -77,18 +64,14 @@ http://en.wikipedia.org/wiki/Lazy_Susan
 **IMPORTANT:** the physical size of the pattern actually does not matter as it is found in 2d and the proper scale is
 figured out using a Kinect-based plane finder.
 
-ORB Template
-============
+.. rubric:: ORB Template
 
 .. _orb_template:
 
 .. figure:: orb_template.jpg
    
-   Once a canonical frame, or "template" is captured of a textured planar surface, it may
-   be used as if it were a fiducial, giving a pose and segmentation prior.
-
-If you are not inclined to print something out, you may use any highly textured planar surface. This involves capturing
-a connonical view of said surface, and then it may be used to establish an object coordinate system, and perform
+If you are not inclined to print the dot pattern, you may use any highly textured planar surface. This involves
+capturing a canonical view of said surface to later establish an object coordinate system, and perform
 segmentation.
 
 First capture an ORB template of your capture workspace. It should be taken from a planar frontal view, and the center
