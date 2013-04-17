@@ -4,7 +4,6 @@
   <description>Capture is a set of tools to capture objects in 3D and perform odometry</description>
   <author email="erublee@willowgarage.com">Ethan Rublee</author>
   <maintainer email="vincent.rabaud@gmail.com">Vincent Rabaud</maintainer>
-  <maintainer>Vincent Rabaud/vrabaud@willowgarage.com</maintainer>
   <license>BSD</license>
   <copyright>Willow Garage</copyright>
 
