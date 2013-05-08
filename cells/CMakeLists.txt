@@ -2,6 +2,7 @@
 ectomodule(capture DESTINATION ${PROJECT_NAME}/ecto_cells
                    INSTALL
                    DeltaRT.cpp
+                   FeatureFinder.cpp
                    MaskDisplay.cpp
                    module.cpp
                    PlaneFilter.cpp

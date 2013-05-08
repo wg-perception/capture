@@ -2,46 +2,12 @@
 Module defining a few BlackBoxes for textured plane tracking
 """
 from ecto import BlackBoxCellInfo, BlackBoxForward
-from ecto_opencv.calib import Select3d, Select3dRegion, PoseDrawer, TransformCompose
+from ecto_opencv.calib import PoseDrawer, TransformCompose
 from ecto_opencv.features2d import FASTFeature, ORB, Matcher, MatchRefinementHSvd, DrawMatches, KeypointsToMat, \
     LSHMatcher
 from ecto_opencv.highgui import imshow, FPSDrawer, MatReader, imread
 import ecto
-
-class FeatureFinder(ecto.BlackBox):
-    @classmethod
-    def declare_cells(cls, _p):
-        return {'orb': BlackBoxCellInfo(ORB),
-                'fast': BlackBoxCellInfo(FASTFeature),
-                'image': BlackBoxCellInfo(ecto.Passthrough),
-                'keypointsTo2d': BlackBoxCellInfo(KeypointsToMat),
-                'select3d': BlackBoxCellInfo(Select3d)}
-
-    @classmethod
-    def declare_direct_params(cls, p, **_kwargs):
-        p.declare('use_fast', 'Use fast or not.', False)
-
-    @classmethod
-    def declare_forwards(cls, p_in):
-        p = {'orb': 'all', 'fast': 'all'}
-        i = {}
-        if p_in.use_fast:
-            i['fast'] = [BlackBoxForward('mask')]
-            i['image'] = [BlackBoxForward('in','image')]
-        else:
-            i['orb'] = 'all'
-        i['select3d'] = [BlackBoxForward('points3d')]
-        o = {'orb': 'all', 'keypointsTo2d' : 'all', 'select3d' : 'all'}
-        return (p, i, o)
-
-    def connections(self, p):
-        graph = [self.orb['keypoints'] >> self.keypointsTo2d['keypoints'],
-                self.keypointsTo2d['points'] >> self.select3d['points'], ]
-        if p.use_fast:
-            graph += [self.image[:] >> (self.fast['image'], self.orb['image']),
-                      self.fast['keypoints'] >> self.orb['keypoints'],
-                      ]
-        return graph
+from object_recognition_capture.ecto_cells.capture import FeatureFinder
 
 class TemplateLoader(ecto.BlackBox):
     @classmethod
@@ -77,7 +43,7 @@ class OrbPoseEstimator(ecto.BlackBox):
         return {'depth_mask': BlackBoxCellInfo(ecto.Passthrough),
                 'fps': BlackBoxCellInfo(FPSDrawer),
                 'gray_image': BlackBoxCellInfo(ecto.Passthrough),
-                'K': BlackBoxCellInfo(ecto.Passthrough),
+                'K_image': BlackBoxCellInfo(ecto.Passthrough),
                 'lsh': BlackBoxCellInfo(LSHMatcher),
                 'orb': BlackBoxCellInfo(FeatureFinder),
                 'pose_estimation': BlackBoxCellInfo(MatchRefinementHSvd),
@@ -96,7 +62,7 @@ class OrbPoseEstimator(ecto.BlackBox):
         #inputs
         p = {'lsh': 'all', 'orb': 'all', 'pose_estimation': 'all'}
         i = {}
-        for cell_name_new_key in [('K','K'), ('rgb_image','color_image'),
+        for cell_name_new_key in [('K_image','K_image'), ('rgb_image','color_image'),
                                   ('gray_image', 'image'), ('depth_mask', 'mask'),
                                   ('points3d', 'points3d')]:
             cell_name, new_key = cell_name_new_key
@@ -119,7 +85,7 @@ class OrbPoseEstimator(ecto.BlackBox):
         orb = self.orb
         graph = [ self.gray_image[:] >> orb['image'],
                   self.points3d[:] >> orb['points3d'],
-                  self.depth_mask[:] >> orb['mask']
+                  self.depth_mask[:] >> orb['points3d_mask']
                 ]
 
         matcher = Matcher()
@@ -155,7 +121,7 @@ class OrbPoseEstimator(ecto.BlackBox):
                   pose_estimation['R', 'T'] >> tr['R2', 'T2'],
                   tr['R', 'T'] >> pose_draw['R', 'T'],
                   pose_estimation['found'] >> pose_draw['trigger'],
-                  self.K[:] >> pose_draw['K'],
+                  self.K_image[:] >> pose_draw['K'],
                   self.rgb_image[:] >> pose_draw['image'],
                   pose_draw['output'] >> fps[:],
                   ]
