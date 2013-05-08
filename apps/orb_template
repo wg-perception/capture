@@ -4,12 +4,12 @@ Script capturing an ORB template (to then use in orb_track or capture)
 """
 from ecto.opts import scheduler_options, run_plasm
 from ecto_image_pipeline.io.source import add_camera_group, create_source
-from ecto_opencv.calib import PoseDrawer, DepthValidDraw, DepthTo3d
+from ecto_opencv.calib import PoseDrawer, DepthValidDraw
 from ecto_opencv.features2d import DrawKeypoints
 from ecto_opencv.highgui import imshow, FPSDrawer, MatWriter, ImageSaver
 from ecto_opencv.imgproc import cvtColor, Conversion
 from ecto_opencv.rgbd import PlaneFinder, ComputeNormals
-from object_recognition_capture.ecto_cells.capture import PlaneFilter
+from object_recognition_capture.ecto_cells.capture import PlaneFilter, FeatureFinder
 from object_recognition_capture.orb_capture import *
 import argparse
 import ecto
@@ -35,7 +35,7 @@ options = parse_args()
 plasm = ecto.Plasm()
 
 #setup the input source, grayscale conversion
-source = create_source('image_pipeline', 'OpenNISource', outputs_list=['K', 'image', 'depth', 'mask_depth', 'points3d'], mode=options.res, fps=options.fps)
+source = create_source('image_pipeline', 'OpenNISource', outputs_list=['K_depth', 'K_image', 'image', 'depth', 'mask_depth', 'points3d'], res=options.res, fps=options.fps)
 rgb2gray = cvtColor (flag=Conversion.RGB2GRAY)
 plasm.connect(source['image'] >> rgb2gray ['image'])
 
@@ -50,7 +50,7 @@ plasm.connect(source['depth'] >> imshow(name='depth')[:],
 orb = FeatureFinder('ORB test', n_features=options.n_features, n_levels=3, scale_factor=1.2)
 plasm.connect(img_src >> orb['image'],
               source['points3d'] >> orb['points3d'],
-              source['mask_depth'] >> orb['mask']
+              source['mask_depth'] >> orb['points3d_mask']
               )
 
 
@@ -70,15 +70,15 @@ compute_normals = ComputeNormals()
 pose_draw = PoseDrawer()
 plane_filter = PlaneFilter(do_center=True)
 plasm.connect(# find the normals
-              source['K', 'points3d'] >> compute_normals['K', 'points3d'],
+              source['K_depth', 'points3d'] >> compute_normals['K', 'points3d'],
               # find the planes
               compute_normals['normals'] >> plane_est['normals'],
-              source['K', 'points3d'] >> plane_est['K', 'points3d'],
+              source['K_depth', 'points3d'] >> plane_est['K', 'points3d'],
               # only choose the most centered plane
               plane_est['planes', 'masks'] >> plane_filter['planes', 'masks'],
               # draw the pose of the plane
               plane_filter['R', 'T'] >> pose_draw['R', 'T'],
-              source['K'] >> pose_draw['K'],
+              source['K_image'] >> pose_draw['K'],
               fps[:] >> pose_draw['image'],
               pose_draw['output'] >> orb_display['image']
               )

@@ -12,7 +12,7 @@ class OpposingDotPoseEstimator(ecto.BlackBox):
         #abuse saturated Arithmetics http://opencv.itseez.com/modules/core/doc/intro.html?highlight=saturated.
         cells = {'gray_image': ecto.Passthrough('gray Input'),
                 'rgb_image': ecto.Passthrough('rgb Input'),
-                'camera_info': ecto.Passthrough('K'),
+                'camera_info': ecto.Passthrough('K_image'),
                 'gather': calib.GatherPoints("gather", N=2),
                 'quantizer': imgproc.Quantize('Quantizer', alpha=1, beta=0),
                 'invert': imgproc.BitwiseNot()}
@@ -56,7 +56,7 @@ class OpposingDotPoseEstimator(ecto.BlackBox):
         #inputs
         i = {'gray_image': [Forward('in','image')],
              'rgb_image': [Forward('in','color_image')],
-             'camera_info': [Forward('in','K')]}
+             'camera_info': [Forward('in','K_image')]}
 
         #outputs
         o = {'pose_calc': [Forward('R'), Forward('T')],

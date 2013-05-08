@@ -26,7 +26,7 @@ if __name__ == '__main__':
     plasm = ecto.Plasm()
 
     #setup the input source, grayscale conversion
-    source = create_source('image_pipeline','OpenNISource',outputs_list=['K', 'image', 'depth', 'points3d', 'mask_depth'],res=options.res,fps=options.fps)
+    source = create_source('image_pipeline','OpenNISource',outputs_list=['K_depth', 'K_image', 'image', 'depth', 'points3d', 'mask_depth'],res=options.res,fps=options.fps)
     rgb2gray = cvtColor('Grayscale', flag=Conversion.RGB2GRAY)
     plasm.connect(source['image'] >> rgb2gray ['image'])
 
@@ -37,7 +37,7 @@ if __name__ == '__main__':
 
     #connect up the pose_est
     plasm.connect(img_src >> pose_est['image'],
-                  source['image','mask_depth','K','points3d'] >> pose_est['color_image','mask','K','points3d'],
+                  source['image','mask_depth','K_image','points3d'] >> pose_est['color_image','mask','K_image','points3d'],
                   )
 
     display = imshow('orb display', name='Pose')

@@ -4,7 +4,6 @@ Module defining common tools for object capture
 from ecto_image_pipeline.base import CameraModelToCv
 from ecto_image_pipeline.io.source import create_source
 from ecto_opencv import highgui, calib, imgproc
-from ecto_opencv.calib import DepthTo3d, KConverter
 from ecto_opencv.rgbd import ComputeNormals, PlaneFinder
 from ecto_openni import SXGA_RES, FPS_30
 from ecto_ros import Cv2CameraInfo, Mat2Image, RT2PoseStamped
@@ -85,7 +84,7 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
     graph = []
 
     # try several parameter combinations
-    source = create_source('image_pipeline', 'OpenNISource', outputs_list=['K', 'K', 'camera', 'image',
+    source = create_source('image_pipeline', 'OpenNISource', outputs_list=['K_depth', 'K_image', 'camera', 'image',
                                                                            'depth', 'points3d',
                                                                            'mask_depth'], res=res, fps=fps)
 
@@ -96,21 +95,17 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
     # Find planes
     plane_est = PlaneFinder(min_size=10000)
     compute_normals = ComputeNormals()
-    K_converter = KConverter()
     # Convert K if the resolution is different (the camera should output that)
-    graph += [ source['K', 'image', 'depth'] >> K_converter['K_image', 'image', 'depth'] ]
     graph += [ # find the normals
-                K_converter['K_depth'] >> compute_normals['K'],
-                source['points3d'] >> compute_normals['points3d'],
+                source['K_depth', 'points3d'] >> compute_normals['K', 'points3d'],
                 # find the planes
                 compute_normals['normals'] >> plane_est['normals'],
-                K_converter['K_depth'] >> plane_est['K'],
-                source['points3d'] >> plane_est['points3d'] ]
+                source['K_depth', 'points3d'] >> plane_est['K', 'points3d'] ]
 
     if orb_template:
         # find the pose using ORB
         poser = OrbPoseEstimator(directory=orb_template, show_matches=orb_matches)
-        graph += [ source['image', 'K', 'mask_depth', 'points3d'] >> poser['color_image', 'K', 'mask', 'points3d'],
+        graph += [ source['image', 'K_image', 'mask_depth', 'points3d'] >> poser['color_image', 'K_image', 'mask', 'points3d'],
                    rgb2gray[:] >> poser['image']
                  ]
     else:
@@ -118,14 +113,14 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
         poser = OpposingDotPoseEstimator(rows=5, cols=3,
                                      pattern_type=calib.ASYMMETRIC_CIRCLES_GRID,
                                      square_size=0.04, debug=True)
-        graph += [ source['image', 'K'] >> poser['color_image', 'K'],
+        graph += [ source['image', 'K_image'] >> poser['color_image', 'K_image'],
                    rgb2gray[:] >> poser['image'] ]
 
     # filter the previous pose and resolve the scale ambiguity using 3d
     pose_filter = object_recognition_capture.ecto_cells.capture.PlaneFilter();
 
     # make sure the pose is centered at the origin of the plane
-    graph += [ K_converter['K_depth'] >> pose_filter['K_depth'],
+    graph += [ source['K_depth'] >> pose_filter['K_depth'],
                poser['R', 'T'] >> pose_filter['R', 'T'],
                plane_est['planes', 'masks'] >> pose_filter['planes', 'masks'] ]
 
@@ -134,7 +129,7 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
     display = highgui.imshow(name='Poses')
     graph += [ pose_filter['found'] >> pose_drawer['trigger'],
                poser['debug_image'] >> pose_drawer['image'],
-               source['K'] >> pose_drawer['K'],
+               source['K_image'] >> pose_drawer['K'],
                pose_filter['R', 'T'] >> pose_drawer['R', 'T'],
                pose_drawer['output'] >> display[:] ]
 
