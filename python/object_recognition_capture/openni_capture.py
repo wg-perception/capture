@@ -4,7 +4,7 @@ Module defining common tools for object capture
 from ecto_image_pipeline.base import CameraModelToCv
 from ecto_image_pipeline.io.source import create_source
 from ecto_opencv import highgui, calib, imgproc
-from ecto_opencv.calib import DepthTo3d
+from ecto_opencv.calib import DepthTo3d, KConverter
 from ecto_opencv.rgbd import ComputeNormals, PlaneFinder
 from ecto_openni import SXGA_RES, FPS_30
 from ecto_ros import Cv2CameraInfo, Mat2Image, RT2PoseStamped
@@ -96,11 +96,16 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
     # Find planes
     plane_est = PlaneFinder(min_size=10000)
     compute_normals = ComputeNormals()
+    K_converter = KConverter()
+    # Convert K if the resolution is different (the camera should output that)
+    graph += [ source['K', 'image', 'depth'] >> K_converter['K_image', 'image', 'depth'] ]
     graph += [ # find the normals
-                source['K', 'points3d'] >> compute_normals['K', 'points3d'],
+                K_converter['K_depth'] >> compute_normals['K'],
+                source['points3d'] >> compute_normals['points3d'],
                 # find the planes
                 compute_normals['normals'] >> plane_est['normals'],
-                source['K', 'points3d'] >> plane_est['K', 'points3d'] ]
+                K_converter['K_depth'] >> plane_est['K'],
+                source['points3d'] >> plane_est['points3d'] ]
 
     if orb_template:
         # find the pose using ORB
@@ -120,7 +125,7 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
     pose_filter = object_recognition_capture.ecto_cells.capture.PlaneFilter();
 
     # make sure the pose is centered at the origin of the plane
-    graph += [ source['K'] >> pose_filter['K'],
+    graph += [ K_converter['K_depth'] >> pose_filter['K_depth'],
                poser['R', 'T'] >> pose_filter['R', 'T'],
                plane_est['planes', 'masks'] >> pose_filter['planes', 'masks'] ]
 

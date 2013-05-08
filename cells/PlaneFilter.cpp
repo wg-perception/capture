@@ -100,7 +100,7 @@ struct PlaneFilter
     inputs.declare(&PlaneFilter::planes_, "planes",
                       "The different found planes (a,b,c,d) of equation ax+by+cz+d=0.").required();
     inputs.declare(&PlaneFilter::masks_, "masks", "The masks for each plane.").required();
-    inputs.declare(&PlaneFilter::K_, "K", "The calibration matrix.");
+    inputs.declare(&PlaneFilter::K_, "K_depth", "The calibration matrix of the depth camera.");
     inputs.declare(&PlaneFilter::R_in_, "R", "The currently estimated plane rotation.");
     inputs.declare(&PlaneFilter::T_in_, "T", "The currently estimated plane origin.");
 
@@ -114,8 +114,8 @@ struct PlaneFilter
   process(const ecto::tendrils& inputs, const ecto::tendrils& outputs)
   {
     *found_ = false;
-    *R_out_ = cv::Mat();
-    *T_out_ = cv::Mat();
+    R_out_->release();
+    T_out_->release();
 
     // Get the origin of the plane
     cv::Point origin;
