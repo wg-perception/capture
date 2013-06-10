@@ -28,7 +28,7 @@ object sparsely, depending on the angle_thresh setting.'''),
     parser.add_argument('-n', '--nviews', metavar='NVIEWS', dest='nviews', type=int,
                        default=36,
                        help='Number of desired views. default(%(default)s)')
-    parser.add_argument('--preview', dest='preview', action='store_true',
+    parser.add_argument('-p', '--preview', dest='preview', action='store_true',
                         default=False, help='Preview the pose estimator.')
     parser.add_argument('-i', '--input', dest='input', type=str, help='The directory of the template to use. If empty, it uses '
                         'the opposite dot pattern', default='')
