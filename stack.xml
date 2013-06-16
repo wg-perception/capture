@@ -7,7 +7,7 @@
   <license>BSD</license>
   <copyright>Willow Garage</copyright>
 
-  <url>http://ecto.willowgarage.com/recognition</url>
+  <url>http://wg-perception.github.io/capture</url>
   <build_depends>catkin</build_depends>
   <build_depends>boost</build_depends>
   <build_depends>ecto</build_depends>
