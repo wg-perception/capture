@@ -3,24 +3,8 @@ project(object_recognition_capture)
 
 find_package(catkin)
 
-if (${catkin_VERSION} VERSION_GREATER "0.5.28")
 find_package(catkin REQUIRED ecto object_recognition_core)
 catkin_package()
-else()
-find_package(ROS REQUIRED ecto object_recognition_core)
-catkin_stack()
-catkin_project(object_recognition_capture)
-set(catkin_LIBRARIES ${ROS_LIBRARIES})
-set(catkin_INCLUDE_DIRS ${ROS_INCLUDE_DIRS})
-set(CATKIN_DEVEL_PREFIX ${CMAKE_BINARY_DIR})
-set(CATKIN_PACKAGE_BIN_DESTINATION share/${PROJECT_NAME}/bin)
-set(CATKIN_PACKAGE_LIB_DESTINATION lib)
-set(CATKIN_PACKAGE_PYTHON_BUILD_DESTINATION gen/py/${PROJECT_NAME}/)
-set(CATKIN_PACKAGE_PYTHON_DESTINATION ${INSTALLED_PYTHONPATH}/${PROJECT_NAME}/)
-install(FILES ${PROJECT_SOURCE_DIR}/manifest.xml
-        DESTINATION share/${PROJECT_NAME}
-)
-endif()
 
 add_definitions("-Wall -Werror -Wl,--no-undefined ")
 
@@ -37,9 +21,7 @@ catkin_python_setup()
 add_subdirectory(python)
 add_subdirectory(cells)
 
-option(BUILD_TEST "Build tests" ON)
-if(BUILD_TEST)
-  enable_testing()
+if(CATKIN_ENABLE_TESTING)
   add_subdirectory(test)
 endif()
 
