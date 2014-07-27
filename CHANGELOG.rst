@@ -2,8 +2,8 @@
 Changelog for package object_recognition_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.0 (2014-07-27)
+------------------
 * make sure doc works with the latest ecto
 * no need for stack.xml
 * drop Fuerte support
