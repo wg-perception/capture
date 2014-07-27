@@ -30,11 +30,10 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.intersphinx',
               'sphinx.ext.todo',
               'sphinx.ext.pngmath',
-              'sphinx.ext.viewcode'
+              'sphinx.ext.viewcode',
               ]
 
 extensions += [
-              'ecto.sphinx.breathe',
               'ecto.sphinx.programoutput',
               'ecto.sphinx.EctoShLexer',
               'ecto.sphinx.EctoPlotDirective',
