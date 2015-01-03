@@ -10,9 +10,6 @@
 
   <build_depend>boost</build_depend>
   <build_depend>ecto</build_depend>
-  <build_depend>ecto_image_pipeline</build_depend>
-  <build_depend>ecto_opencv</build_depend>
-  <build_depend>ecto_openni</build_depend>
   <build_depend>object_recognition_core</build_depend>
 
   <run_depend>boost</run_depend>
