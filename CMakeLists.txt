@@ -26,7 +26,7 @@ if(CATKIN_ENABLE_TESTING)
 endif()
 
 # install the applications
-install(PROGRAMS ${PROJECT_SOURCE_DIR}/apps/capture
+catkin_install_python(PROGRAMS ${PROJECT_SOURCE_DIR}/apps/capture
                  ${PROJECT_SOURCE_DIR}/apps/orb_template
                  ${PROJECT_SOURCE_DIR}/apps/orb_track
                  ${PROJECT_SOURCE_DIR}/apps/upload
