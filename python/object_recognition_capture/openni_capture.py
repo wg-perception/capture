@@ -142,8 +142,8 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
                pose_filter['R', 'T'] >> poseMsg['R', 'T'] ]
 
     # publish the source data
-    rgbMsg = Mat2Image(frame_id='/camera_rgb_optical_frame', swap_rgb=True)
-    depthMsg = Mat2Image(frame_id='/camera_rgb_optical_frame')
+    rgbMsg = Mat2Image(frame_id='/camera_rgb_optical_frame', swap_rgb=True, encoding='bgr8')
+    depthMsg = Mat2Image(frame_id='/camera_rgb_optical_frame', encoding='16UC1')
     graph += [ source['depth'] >> depthMsg[:],
                source['image'] >> rgbMsg[:] ]
 
@@ -154,7 +154,7 @@ def create_capture_plasm(bag_name, angle_thresh, segmentation_cell, n_desired=72
                pose_filter['T'] >> masker['T'] ]
 
     # publish the mask
-    maskMsg = Mat2Image(frame_id='/camera_rgb_optical_frame')
+    maskMsg = Mat2Image(frame_id='/camera_rgb_optical_frame', encoding='8UC1')
     graph += [ masker['mask'] >> maskMsg[:] ]
 
     camera2cv = CameraModelToCv()
