@@ -2,6 +2,15 @@
 Changelog for package object_recognition_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use "mono8" for mask and swap brg to rgb
+* Fix encoding when saving bag file
+* use catkin macro to install Python scripts
+* cleanup tests
+* clean build dependencies
+* Contributors: JimmyDaSilva, Vincent Rabaud
+
 0.3.0 (2014-07-27)
 ------------------
 * make sure doc works with the latest ecto
