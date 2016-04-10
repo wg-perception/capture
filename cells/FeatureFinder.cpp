@@ -103,17 +103,32 @@ struct FeatureFinder {
     }
 
     // Find keypoints in the current image
-    cv::ORB orb;
+#if (CV_MAJOR_VERSION ==3)
+    cv::Ptr<cv::ORB> orb = cv::ORB::create(*n_features_, *scale_factor_, *n_levels_);
+#elif (CV_MAJOR_VERSION == 2) && (CV_MINOR_VERSION >= 4)
+    cv::ORB orb = cv::ORB(*n_features_, *scale_factor_, *n_levels_);
+#else
+    cv::ORB::CommonParams orb_params;
+    orb_params.first_level_ = 0;
+    orb_params.n_levels_ = *n_levels_;
+    orb_params.scale_factor_ = *scale_factor_;
+    cv::ORB orb = cv::ORB(*n_features_, orb_params);
+#endif
+
     cv::Mat descriptors;
     if (*use_fast_) {
       cv::FAST(*image_, *keypoints_, 30);
+#if (CV_MAJOR_VERSION ==3)
+      orb->detectAndCompute(*image_, mask, *keypoints_, descriptors, true);
+#else
       orb(*image_, mask, *keypoints_, descriptors, true);
+#endif
     } else {
-      cv::ORB orb;
-      orb.set("nFeatures", *n_features_);
-      orb.set("nLevels", *n_levels_);
-      orb.set("scaleFactor", *scale_factor_);
+#if (CV_MAJOR_VERSION ==3)
+      orb->detectAndCompute(*image_, mask, *keypoints_, descriptors);
+#else
       orb(*image_, mask, *keypoints_, descriptors);
+#endif
     }
 
     // Remove bad keypoints
@@ -153,7 +168,8 @@ private:
   /** The mask of where to find keypoints in the image */
   ecto::spore<cv::Mat> mask_;
   /** ORB parameters */
-  ecto::spore<float> n_features_, n_levels_, scale_factor_;
+  ecto::spore<int> n_features_, n_levels_;
+  ecto::spore<float> scale_factor_;
   /** The resulting descriptors */
   ecto::spore<cv::Mat> descriptors_;
   /** Thekeypoints */
