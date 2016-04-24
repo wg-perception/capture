@@ -2,8 +2,8 @@
 Changelog for package object_recognition_capture
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.2 (2016-04-24)
+------------------
 * compile with OpenCV3
 * Contributors: Vincent Rabaud
 
